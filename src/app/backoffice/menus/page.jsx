@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CopyPlus, Trash, ChevronDown, GripVertical, Copy } from "lucide-react";
+import { CopyPlus, Trash, ChevronDown, GripVertical, Copy, Plus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -30,6 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import Loading from "@/components/loading";
 
 // ✅ แก้ไข SortableItem - ใช้ CSS transform และ transition ที่ดีขึ้น
 function SortableItem({ id, children, isDragging }) {
@@ -131,7 +132,7 @@ function MenuItemCard({
             {!isDragging && (
               <div className="flex gap-2 ml-2">
                 <Button size="icon" variant="outline" className="h-8 w-8">
-                  <CopyPlus className="h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                 </Button>
                 <Button
                   size="icon"
@@ -234,7 +235,6 @@ export default function Menus() {
         const data = await res.json();
         setMenus(data);
         console.log(data);
-        
       } catch (error) {
         console.error("Error fetching menus:", error);
       } finally {
@@ -326,7 +326,7 @@ export default function Menus() {
     );
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6">

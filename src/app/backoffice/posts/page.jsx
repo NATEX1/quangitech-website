@@ -62,6 +62,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Loading from "@/components/loading";
 
 export default function PostsTable() {
   const [posts, setPosts] = useState([]);
@@ -358,7 +359,7 @@ export default function PostsTable() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6">

@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/components/loading";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -368,7 +369,7 @@ export default function page() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading && users.length === 0) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6">

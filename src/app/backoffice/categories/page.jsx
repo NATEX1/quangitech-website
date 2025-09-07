@@ -24,6 +24,7 @@ import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { ArrowUpDown, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
+import Loading from "@/components/loading";
 
 
 export default function categories() {
@@ -206,7 +207,7 @@ export default function categories() {
       .replace(/--+/g, "-");
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="p-6">

@@ -44,6 +44,7 @@
 }
 
 :root {
+  --font-inter: "Inter", sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
@@ -119,4 +120,21 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: var(--font-inter);
+}
+
+@keyframes load {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.animate-load {
+  animation: load 2s linear infinite;
 }
