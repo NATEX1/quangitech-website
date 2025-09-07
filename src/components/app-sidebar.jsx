@@ -84,7 +84,8 @@ export default function AppSidebar() {
     <Sidebar collapsible="icon">
       {/* Header */}
       <SidebarHeader>
-        <div>
+        <div className="flex items-center">
+          <img src="/logo.svg" alt="logo" className="size-12" />
           <span
             className={`text-xl font-bold transition-all duration-300 ${
               open

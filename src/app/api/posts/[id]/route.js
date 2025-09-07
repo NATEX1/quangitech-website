@@ -1,4 +1,8 @@
 import { PrismaClient } from "@/generated/prisma";
+import path from "path";
+import { mkdir, writeFile } from "fs/promises";
+import { verifyToken } from "@/lib/jwt";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -36,6 +40,77 @@ export async function DELETE(req, { params }) {
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to delete item" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req, { params }) {
+  const token = req.cookies?.get("token")?.value;
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const payload = verifyToken(token);
+  if (!payload?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const formData = await req.formData();
+
+  const title = formData.get("title")?.toString();
+  const slug = formData.get("slug")?.toString();
+  const excerpt = formData.get("excerpt")?.toString();
+  const content = formData.get("content")?.toString();
+  const status = formData.get("status")?.toString();
+  const postType = formData.get("postType")?.toString();
+  const isFeatured = formData.get("isFeatured") === "true";
+  const metaTitle = formData.get("metaTitle")?.toString();
+  const metaDescription = formData.get("metaDescription")?.toString();
+  const metaKeyword = formData.get("metaKeyword")?.toString();
+  const categoryId = formData.get("categoryId")?.toString();
+
+  let thumbnailPath = null;
+  const thumbnailFile = formData.get("thumbnail");
+
+  if (thumbnailFile instanceof File) {
+    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    await mkdir(uploadDir, { recursive: true });
+    const buffer = Buffer.from(await thumbnailFile.arrayBuffer());
+    const filename = `${Date.now()}-${thumbnailFile.name.replace(/\s+/g, "-")}`;
+    const filepath = path.join(uploadDir, filename);
+    await writeFile(filepath, buffer);
+    thumbnailPath = `/uploads/${filename}`;
+  } else if (typeof thumbnailFile === "string") {
+    thumbnailPath = thumbnailFile;
+  }
+
+  try {
+    const updatedPost = await prisma.post.update({
+      where: { id: params.id },
+      data: {
+        ...(title && { title }),
+        ...(slug && { slug }),
+        ...(excerpt && { excerpt }),
+        ...(content && { content }),
+        ...(status && { status }),
+        ...(postType && { postType }),
+        isFeatured,
+        ...(metaTitle && { metaTitle }),
+        ...(metaDescription && { metaDescription }),
+        ...(metaKeyword && { metaKeyword }),
+        ...(categoryId && { category: { connect: { id: categoryId } } }),
+        ...(thumbnailPath && { thumbnail: thumbnailPath }),
+        updatedAt: new Date(),
+        publishedAt: status === "published" ? new Date() : null,
+      },
+    });
+
+    return NextResponse.json(updatedPost, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
