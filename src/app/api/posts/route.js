@@ -7,6 +7,8 @@ import { verifyToken } from "@/lib/jwt";
 const prisma = new PrismaClient();
 
 export async function POST(req) {
+
+  
   const token = req.cookies.get("token")?.value;
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,17 +21,17 @@ export async function POST(req) {
 
   const formData = await req.formData();
 
-  const title = formData.get("title")?.toString() || "";
-  const slug = formData.get("slug")?.toString() || "";
-  const excerpt = formData.get("excerpt")?.toString() || "";
-  const content = formData.get("content")?.toString() || "";
-  const status = formData.get("status")?.toString() || "draft";
-  const postType = formData.get("postType")?.toString() || "post";
+  const title = formData.get("title")?.toString();
+  const slug = formData.get("slug")?.toString();
+  const excerpt = formData.get("excerpt")?.toString();
+  const content = formData.get("content")?.toString();
+  const status = formData.get("status")?.toString();
+  const postType = formData.get("postType")?.toString();
   const isFeatured = formData.get("isFeatured") === "true";
-  const metaTitle = formData.get("metaTitle")?.toString() || "";
-  const metaDescription = formData.get("metaDescription")?.toString() || "";
-  const metaKeyword = formData.get("metaKeyword")?.toString() || "";
-  const categoryId = formData.get("categoryId")?.toString()
+  const metaTitle = formData.get("metaTitle")?.toString();
+  const metaDescription = formData.get("metaDescription")?.toString();
+  const metaKeyword = formData.get("metaKeyword")?.toString();
+  const categoryId = formData.get("categoryId")?.toString();
 
   if (!title || !slug || !content || !categoryId) {
     return NextResponse.json(
@@ -103,6 +105,9 @@ export async function GET() {
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch posts" },
+      { status: 500 }
+    );
   }
 }

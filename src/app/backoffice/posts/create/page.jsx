@@ -19,17 +19,13 @@ export default function create() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [status, setStatus] = useState("draft"); // default draft
-  const [postType, setPostType] = useState("blog"); // default blog
   const [isFeatured, setIsFeatured] = useState(false);
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaKeyword, setMetaKeyword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const editorRef = useRef(null);
   const [content, setContent] = useState("");
   const [categoryId, setCategoryId] = useState(null);
-
   const [thumbnail, setThumbnail] = useState(null);
   const [showLibrary, setShowLibrary] = useState(false);
 
@@ -63,7 +59,7 @@ export default function create() {
       formData.append("title", title);
       formData.append("slug", slug);
       formData.append("excerpt", excerpt);
-      formData.append("content", content || "");
+      formData.append("content", content);
       formData.append("status", publish ? "published" : "draft");
       formData.append("postType", "post");
       formData.append("isFeatured", isFeatured ? "true" : "false");

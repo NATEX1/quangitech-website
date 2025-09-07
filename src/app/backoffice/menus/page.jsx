@@ -233,6 +233,8 @@ export default function Menus() {
         if (!res.ok) throw new Error("Failed to fetch menus");
         const data = await res.json();
         setMenus(data);
+        console.log(data);
+        
       } catch (error) {
         console.error("Error fetching menus:", error);
       } finally {
