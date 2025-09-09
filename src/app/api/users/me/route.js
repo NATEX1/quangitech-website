@@ -1,18 +1,20 @@
 import { PrismaClient } from "@/generated/prisma";
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
-    const token = req.cookies.get("token")?.value;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload =  verifyToken(token);
+    const payload = await verifyToken(token);
     console.log('payload: ', payload);
     
     if (!payload) {

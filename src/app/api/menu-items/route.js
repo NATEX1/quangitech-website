@@ -6,23 +6,37 @@ const prisma = new PrismaClient();
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { menuId, name, url } = body;
+    const { menuId, name, url, parentId } = body;
 
-    // Get the current max sortOrder for this menu
-    const maxSort = await prisma.menuItem.aggregate({
-      _max: { sortOrder: true },
-      where: { menuId },
-    });
+    let sortOrder;
 
-    const sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
+    if (parentId) {
+      const maxSort = await prisma.menuItem.aggregate({
+        _max: { sortOrder: true },
+        where: { 
+          menuId,
+          parentId: parentId
+        },
+      });
+      sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
+    } else {
+      const maxSort = await prisma.menuItem.aggregate({
+        _max: { sortOrder: true },
+        where: { 
+          menuId,
+          parentId: null
+        },
+      });
+      sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
+    }
 
-    // Create new menu item
     const newItem = await prisma.menuItem.create({
       data: {
         menuId,
         name,
         url,
         sortOrder,
+        parentId: parentId || null,
       },
     });
 

@@ -88,15 +88,15 @@ export default function PostsTable() {
     fetchPosts();
   }, []);
 
-  const handleDelete = async (postId) => {
+  const handleDelete = async (postSlug) => {
     try {
       // เรียก API เพื่อลบโพสต์
-      await fetch(`/api/posts/${postId}`, {
+      await fetch(`/api/posts/${postSlug}`, {
         method: "DELETE",
       });
 
       // ลบโพสต์ออกจาก state
-      setPosts((prev) => prev.filter((post) => post.id !== postId));
+      setPosts((prev) => prev.filter((post) => post.slug !== postSlug));
 
       // แจ้งเตือนสำเร็จ
       toast.success("Post deleted successfully");
@@ -134,11 +134,6 @@ export default function PostsTable() {
             )}
             <div className="flex flex-col">
               <p className="font-medium">{row.getValue("title")}</p>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {row.original.excerpt.length > 50
-                  ? row.original.excerpt.slice(0, 50) + "..."
-                  : row.original.excerpt}
-              </p>
             </div>
           </div>
         ),
@@ -311,7 +306,7 @@ export default function PostsTable() {
           return (
             <div>
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/backoffice/posts/${post.id}/edit`}>
+                <Link href={`/backoffice/posts/${post.slug}/edit`}>
                   <Edit size={16} /> Edit
                 </Link>
               </Button>
@@ -331,7 +326,7 @@ export default function PostsTable() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDelete(post.id)}>
+                    <AlertDialogAction onClick={() => handleDelete(post.slug)}>
                       Yes, delete
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -409,7 +404,7 @@ export default function PostsTable() {
       </div>
 
       <div className="overflow-hidden rounded-md border">
-        <Table>
+        <Table >
           <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -60,19 +60,20 @@ function SortableItem({ id, children, isDragging }) {
   );
 }
 
-// ✅ แก้ไข MenuItemCard - ลดความซับซ้อนของ drag handle
+// ✅ Enhanced MenuItemCard with submenu support
 function MenuItemCard({
   item,
   isDragging,
   dragHandleProps,
   isChild,
   onDelete,
+  onAddSubmenu,
   menuId,
 }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const handleDeleteClick = (e) => {
-    e.stopPropagation(); // ✅ ป้องกัน event bubbling
+    e.stopPropagation();
     setShowDeleteDialog(true);
   };
 
@@ -82,8 +83,13 @@ function MenuItemCard({
   };
 
   const handleCopyUrl = (e) => {
-    e.stopPropagation(); // ✅ ป้องกัน event bubbling
+    e.stopPropagation();
     navigator.clipboard.writeText(`http://localhost:8000${item.url}`);
+  };
+
+  const handleAddSubmenu = (e) => {
+    e.stopPropagation();
+    onAddSubmenu(item.id);
   };
 
   return (
@@ -92,11 +98,12 @@ function MenuItemCard({
         className={`
         shadow-none border transition-all duration-150 ease-in-out
         ${isDragging ? "bg-accent shadow-lg" : "hover:shadow-sm"}
+        ${isChild ? "border-l-2 border-l-blue-200" : ""}
       `}
       >
         <CardContent className="py-2">
           <div className="flex justify-between items-center">
-            {/* ✅ แก้ไข drag handle */}
+            {/* Drag handle */}
             {!isChild && (
               <div
                 {...dragHandleProps}
@@ -113,7 +120,14 @@ function MenuItemCard({
             )}
 
             <div className="flex-1 flex flex-col min-w-0">
-              <span className="font-semibold truncate">{item.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold truncate">{item.name}</span>
+                {item.children && item.children.length > 0 && (
+                  <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                    {item.children.length} submenu{item.children.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
               <div className="flex items-center gap-2 text-sm text-gray-600 w-fit group cursor-pointer transition-all">
                 <span
                   onClick={handleCopyUrl}
@@ -128,17 +142,27 @@ function MenuItemCard({
               </div>
             </div>
 
-            {/* ✅ ซ่อนปุ่มเมื่อ drag */}
+            {/* Action buttons */}
             {!isDragging && (
               <div className="flex gap-2 ml-2">
-                <Button size="icon" variant="outline" className="h-8 w-8">
-                  <Plus className="h-4 w-4" />
-                </Button>
+                {/* Add submenu button - only for parent items */}
+                {!isChild && (
+                  <Button 
+                    size="icon" 
+                    variant="outline" 
+                    onClick={handleAddSubmenu}
+                    className="h-8 w-8"
+                    title="Add submenu item"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                )}
                 <Button
                   size="icon"
                   variant="outline"
                   onClick={handleDeleteClick}
                   className="h-8 w-8"
+                  title="Delete item"
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
@@ -154,7 +178,10 @@ function MenuItemCard({
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              menu item "{item.name}".
+              menu item "{item.name}"
+              {item.children && item.children.length > 0 && 
+                ` and all its ${item.children.length} submenu item(s)`
+              }.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -169,13 +196,14 @@ function MenuItemCard({
   );
 }
 
-// ✅ แก้ไข RenderMenuItem - ลดความซับซ้อน
+// ✅ Enhanced RenderMenuItem with better submenu styling
 function RenderMenuItem({
   item,
   draggingItemId,
   dragHandleProps,
   isChild = false,
   onDelete,
+  onAddSubmenu,
   menuId,
   parentIsDragging = false,
 }) {
@@ -190,12 +218,13 @@ function RenderMenuItem({
         dragHandleProps={isChild ? undefined : dragHandleProps}
         isChild={isChild}
         onDelete={onDelete}
+        onAddSubmenu={onAddSubmenu}
         menuId={menuId}
       />
       {item.children && item.children.length > 0 && (
         <div
           className={`
-          ml-6 space-y-1 transition-all duration-200
+          ml-6 space-y-1 transition-all duration-200 border-l-2 border-l-gray-200 pl-4
           ${isDragging ? "opacity-50" : "opacity-100"}
         `}
         >
@@ -208,12 +237,95 @@ function RenderMenuItem({
                 draggingItemId={draggingItemId}
                 isChild={true}
                 onDelete={onDelete}
+                onAddSubmenu={onAddSubmenu}
                 menuId={menuId}
                 parentIsDragging={isDragging}
               />
             ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ✅ AddSubmenuSheet component
+function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    url: "",
+    sortOrder: (parentItem?.children?.length || 0) + 1,
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const response = await fetch("/api/menu-items", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          menuId: menu.id,
+          parentId: parentItem.id, // Set parent ID for submenu
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create submenu item");
+      
+      const newItem = await response.json();
+      onAdd(newItem);
+      setFormData({ name: "", url: "" });
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Error creating submenu item:", error);
+      toast.error("Failed to create submenu item");
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <h2 className="text-lg font-semibold mb-4">
+          Add Submenu Item to "{parentItem?.name}"
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">URL</label>
+            <input
+              type="text"
+              value={formData.url}
+              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md"
+              placeholder="/submenu-page"
+              required
+            />
+          </div>
+          <div className="flex gap-2 justify-end">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit">Add Submenu Item</Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
@@ -225,6 +337,7 @@ export default function Menus() {
   const [draggingItemId, setDraggingItemId] = useState(null);
   const [draggingItem, setDraggingItem] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [submenuSheet, setSubmenuSheet] = useState({ open: false, parentItem: null, menu: null });
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -264,20 +377,65 @@ export default function Menus() {
           return { ...menu, items: removeItem(menu.items) };
         })
       );
-      toast.success("Menu added delated.");
+      toast.success("Menu item deleted.");
     } catch (error) {
       console.error("Error deleting menu item:", error);
     }
   };
 
+  const handleAddSubmenu = (parentId) => {
+    // Find the parent item and menu
+    let parentItem = null;
+    let parentMenu = null;
+    
+    for (const menu of menus) {
+      parentItem = menu.items.find(item => item.id === parentId);
+      if (parentItem) {
+        parentMenu = menu;
+        break;
+      }
+    }
+    
+    if (parentItem && parentMenu) {
+      setSubmenuSheet({ 
+        open: true, 
+        parentItem, 
+        menu: parentMenu 
+      });
+    }
+  };
+
+  const handleSubmenuAdded = (newSubmenuItem) => {
+    setMenus((prevMenus) =>
+      prevMenus.map((menu) => {
+        if (menu.id !== submenuSheet.menu.id) return menu;
+        
+        const updateItems = (items) =>
+          items.map((item) => {
+            if (item.id === submenuSheet.parentItem.id) {
+              return {
+                ...item,
+                children: [...(item.children || []), newSubmenuItem].sort((a, b) => a.sortOrder - b.sortOrder)
+              };
+            }
+            return {
+              ...item,
+              children: item.children ? updateItems(item.children) : item.children
+            };
+          });
+        
+        return { ...menu, items: updateItems(menu.items) };
+      })
+    );
+    toast.success("Submenu item added!");
+  };
+
   const handleToggleMenu = (id) => setOpenMenuId(openMenuId === id ? null : id);
 
-  // ✅ แก้ไข drag handlers
   const handleDragStart = (event) => {
     const draggedId = event.active.id.toString();
     setDraggingItemId(draggedId);
 
-    // หา item ที่ถูก drag
     let draggedItem = null;
     for (const menu of menus) {
       draggedItem = menu.items.find((item) => item.id.toString() === draggedId);
@@ -288,8 +446,8 @@ export default function Menus() {
 
   const handleDragEnd = async (event, menuId) => {
     const { active, over } = event;
-    setDraggingItemId(null); // ✅ clear ตอนลากเสร็จ
-    setDraggingItem(null); // ✅ clear dragging item
+    setDraggingItemId(null);
+    setDraggingItem(null);
 
     if (!over || active.id === over.id) return;
 
@@ -308,7 +466,6 @@ export default function Menus() {
           (m, idx) => ({ ...m, sortOrder: idx + 1 })
         );
 
-        // อัปเดตข้อมูลบนเซิร์ฟเวอร์
         reordered.forEach(async (item) => {
           try {
             await fetch(`/api/menu-items/${item.id}`, {
@@ -333,7 +490,7 @@ export default function Menus() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Menus</h1>
-          <p className="text-sm text-muted-foreground">Manage your menus</p>
+          <p className="text-sm text-muted-foreground">Manage your menus and submenus</p>
         </div>
       </div>
 
@@ -354,7 +511,9 @@ export default function Menus() {
           >
             <div className="flex-1 font-medium">{menu.name}</div>
             <div className="w-36 text-center text-muted-foreground">
-              {menu.items.length}
+              {menu.items.reduce((total, item) => 
+                total + 1 + (item.children ? item.children.length : 0), 0
+              )}
             </div>
             <ChevronDown
               className={`h-4 w-4 ml-2 transition-transform duration-200 ${
@@ -379,7 +538,6 @@ export default function Menus() {
                 }}
               />
 
-              {/* ✅ แก้ไข DndContext */}
               <DndContext
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
@@ -389,7 +547,6 @@ export default function Menus() {
                   items={menu.items.map((item) => item.id.toString())}
                   strategy={verticalListSortingStrategy}
                 >
-                  {/* ✅ ลบ minHeight ที่ซับซ้อน */}
                   <div className="space-y-2">
                     {menu.items
                       .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -403,6 +560,7 @@ export default function Menus() {
                             item={item}
                             draggingItemId={draggingItemId}
                             onDelete={handleDeleteMenuItem}
+                            onAddSubmenu={handleAddSubmenu}
                             menuId={menu.id}
                           />
                         </SortableItem>
@@ -410,7 +568,6 @@ export default function Menus() {
                   </div>
                 </SortableContext>
 
-                {/* ✅ แก้ไข DragOverlay */}
                 <DragOverlay>
                   {draggingItem && (
                     <div>
@@ -419,6 +576,7 @@ export default function Menus() {
                         isDragging={false}
                         isChild={false}
                         onDelete={() => {}}
+                        onAddSubmenu={() => {}}
                         menuId={menu.id}
                       />
                     </div>
@@ -429,6 +587,15 @@ export default function Menus() {
           )}
         </div>
       ))}
+
+      {/* Submenu Sheet */}
+      <AddSubmenuSheet
+        parentItem={submenuSheet.parentItem}
+        menu={submenuSheet.menu}
+        onAdd={handleSubmenuAdded}
+        open={submenuSheet.open}
+        onOpenChange={(open) => setSubmenuSheet({ ...submenuSheet, open })}
+      />
     </div>
   );
 }

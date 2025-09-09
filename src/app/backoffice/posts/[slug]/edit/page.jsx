@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { ImageLibraryDialog } from "@/components/image-library-dialog";
 
 export default function EditPost() {
-  const { id } = useParams(); 
+  const { slug: routeSlug  } = useParams(); 
   const router = useRouter();
 
   const [title, setTitle] = useState("");
@@ -37,7 +37,7 @@ export default function EditPost() {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const res = await fetch(`/api/posts/${id}`);
+        const res = await fetch(`/api/posts/${routeSlug}`);
         if (!res.ok) throw new Error("Failed to fetch post");
         const data = await res.json();
 
@@ -59,8 +59,8 @@ export default function EditPost() {
         toast.error("Error loading post");
       }
     }
-    if (id) fetchPost();
-  }, [id]);
+    if (routeSlug) fetchPost();
+  }, [routeSlug]);
 
   // บันทึกโพสต์ (PUT)
   const handleSave = async (publish = false) => {
@@ -80,7 +80,7 @@ export default function EditPost() {
       if (categoryId) formData.append("categoryId", categoryId.toString());
       if (thumbnail) formData.append("thumbnail", thumbnail);
 
-      const res = await fetch(`/api/posts/${id}`, {
+      const res = await fetch(`/api/posts/${routeSlug}`, {
         method: "PUT",
         body: formData,
       });

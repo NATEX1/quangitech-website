@@ -40,7 +40,6 @@ export default function create() {
     setContent(newContent);
   };
 
-
   const generateSlug = (text) => {
     return text
       .toLowerCase()
@@ -83,7 +82,7 @@ export default function create() {
     } catch (error) {
       console.error("Error saving post:", error);
       toast.error("Error saving post", {
-        description: (error).message,
+        description: error.message,
         duration: 4000,
       });
     } finally {
@@ -163,11 +162,11 @@ export default function create() {
             <Label htmlFor="excerpt" className="text-sm font-medium">
               Excerpt
             </Label>
-            <Textarea
+            <textarea
               id="excerpt"
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
-              className="mt-1"
+              className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive mt-1"
               rows={3}
               disabled={isLoading}
             />

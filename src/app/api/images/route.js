@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { writeFile, readdir, unlink } from "fs/promises";
+import { NextResponse } from "next/server";
+import { writeFile, readdir } from "fs/promises";
 import path from "path";
 import fs from "fs";
 
@@ -9,18 +9,23 @@ async function ensureUploadDir() {
   try {
     await readdir(uploadDir); 
   } catch {
-    // สร้างโฟลเดอร์ก่อน
     await fs.promises.mkdir(uploadDir, { recursive: true });
     await writeFile(path.join(uploadDir, ".keep"), "");
   }
 }
 
+function getFullUrl(req, filePath) {
+  const protocol = req.headers.get("x-forwarded-proto") || "http";
+  const host = req.headers.get("host") || "localhost:3000";
+  return `${protocol}://${host}${filePath}`;
+}
 
 export async function GET(req) {
-  // Load images
   try {
     const files = await readdir(uploadDir);
-    const images = files.map((file) => ({ url: `/uploads/${file}` }));
+    const images = files.map((file) => ({
+      url: getFullUrl(req, `/uploads/${file}`)
+    }));
     return NextResponse.json(images);
   } catch (err) {
     console.error(err);
@@ -31,7 +36,6 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await ensureUploadDir();
-
     const formData = await req.formData();
     const file = formData.get("file");
 
@@ -39,14 +43,12 @@ export async function POST(req) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // ตั้งชื่อไฟล์ใหม่
     const filename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
     const filePath = path.join(uploadDir, filename);
-
     const buffer = Buffer.from(await file.arrayBuffer());
     await writeFile(filePath, buffer);
 
-    const imageUrl = `/uploads/${filename}`;
+    const imageUrl = getFullUrl(req, `/uploads/${filename}`);
     return NextResponse.json({ link: imageUrl });
   } catch (err) {
     console.error(err);
@@ -54,11 +56,8 @@ export async function POST(req) {
   }
 }
 
-
-
 export async function DELETE(req) {
   try {
-    // Froala may send src as form-data
     const formData = await req.formData();
     const src = formData.get("src")?.toString();
 
@@ -75,9 +74,3 @@ export async function DELETE(req) {
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 }
-
-
-
-
-
-

@@ -1,7 +1,8 @@
 import { PrismaClient } from "@/generated/prisma";
-import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { signToken } from "@/lib/jwt";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -10,20 +11,35 @@ export async function POST(req) {
     const { email, password } = await req.json();
 
     if (!email || !password) {
-      return NextResponse.json({ error: "Missing email or password" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing email or password" },
+        { status: 400 }
+      );
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    if (!user) {
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    }
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    if (!isValid) {
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    }
 
-    const token = signToken({ userId: user.id });
+    const token = await signToken({ userId: user.id });
 
-    const res = NextResponse.json({ message: "Logged in" });
-    res.cookies.set("token", token, { httpOnly: true, path: "/" });
-    return res;
+    // set cookie
+    cookies().set({
+      name: "token",
+      value: token,
+      httpOnly: true,
+      path: "/",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return NextResponse.json({ message: "Logged in" });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

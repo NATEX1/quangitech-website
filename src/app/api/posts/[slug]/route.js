@@ -3,15 +3,16 @@ import path from "path";
 import { mkdir, writeFile } from "fs/promises";
 import { verifyToken } from "@/lib/jwt";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 const prisma = new PrismaClient();
 
 export async function GET(req, { params }) {
-  const { id } = await params;
+  const { slug } = await params;
 
   try {
     const post = await prisma.post.findUnique({
-      where: { id },
+      where: { slug },
     });
 
     if (!post) {
@@ -29,15 +30,32 @@ export async function GET(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
-  try {
-    const { id } = await params;
+  const { slug } = await params;
+  const token = req.cookies.get("token")?.value;
 
-    await prisma.post.delete({ where: { id } });
+  if (!token) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const payload = await verifyToken(token);
+  if (!payload?.userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const post = await prisma.post.findUnique({ where: { slug } });
+    if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    await prisma.post.delete({ where: { slug } });
+
     return NextResponse.json(
-      { message: `Deleted item with id: ${id}` },
+      { message: `Deleted item with slug: ${slug}` },
       { status: 200 }
     );
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to delete item" },
       { status: 500 }
@@ -46,12 +64,14 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-  const token = req.cookies?.get("token")?.value;
+  const { slug: postSlug } = await params;
+  const token = req.cookies.get("token")?.value;
+
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const payload = verifyToken(token);
+  const payload = await verifyToken(token);
   if (!payload?.userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -87,7 +107,7 @@ export async function PUT(req, { params }) {
 
   try {
     const updatedPost = await prisma.post.update({
-      where: { id: params.id },
+      where: { slug: postSlug },
       data: {
         ...(title && { title }),
         ...(slug && { slug }),

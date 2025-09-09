@@ -3,9 +3,13 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(req) {
   try {
+    const url = new URL(req.url);
+    const nameFilter = url.searchParams.get("name"); 
+
     const menus = await prisma.menu.findMany({
+      where: nameFilter ? { name: nameFilter } : undefined,
       include: { items: true },
       orderBy: { name: "asc" },
     });
@@ -14,7 +18,6 @@ export async function GET() {
       const map = {};
       const roots = [];
 
-      // map id -> item
       menu.items.forEach(item => {
         map[item.id] = { ...item, children: [] };
       });

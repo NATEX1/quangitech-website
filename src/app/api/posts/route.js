@@ -7,14 +7,13 @@ import { verifyToken } from "@/lib/jwt";
 const prisma = new PrismaClient();
 
 export async function POST(req) {
-
-  
   const token = req.cookies.get("token")?.value;
+
   if (!token) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const payload = verifyToken(token);
+  const payload = await verifyToken(token);
   if (!payload?.userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -102,12 +101,31 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json(posts, { status: 200 });
+    const response = NextResponse.json(posts, { status: 200 });
+
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+
+    return response;
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
+
+    const response = NextResponse.json(
       { error: "Failed to fetch posts" },
       { status: 500 }
     );
+
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+
+    return response;
   }
 }

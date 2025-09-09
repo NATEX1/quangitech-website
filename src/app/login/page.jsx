@@ -127,16 +127,6 @@ export default function LoginForm() {
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>
 
-            <div className="text-center text-sm">
-              <span className="text-gray-600">Don't have an account? </span>
-              <button
-                type="button"
-                className="text-blue-600 hover:text-blue-500 font-medium cursor-pointer"
-                onClick={() => alert("Sign up functionality would go here")}
-              >
-                Sign up
-              </button>
-            </div>
           </form>
         </CardContent>
       </Card>
