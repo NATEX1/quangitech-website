@@ -103,13 +103,6 @@ export async function GET() {
 
     const response = NextResponse.json(posts, { status: 200 });
 
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization"
-    );
-
     return response;
   } catch (error) {
     console.error(error);
@@ -117,13 +110,6 @@ export async function GET() {
     const response = NextResponse.json(
       { error: "Failed to fetch posts" },
       { status: 500 }
-    );
-
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization"
     );
 
     return response;
