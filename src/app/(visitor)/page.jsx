@@ -170,7 +170,7 @@ export default function Page() {
                 </p>
                 <div>
                   <Button className="bg-[#ffb87a] rounded-full w-full hover:bg-[#ffb87a] cursor-pointer">
-                    Learn more
+                    Learn moresdsada
                   </Button>
                 </div>
               </div>
