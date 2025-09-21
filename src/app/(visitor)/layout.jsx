@@ -1,4 +1,5 @@
 import Navbar from "@/components/navbar";
+import BackToTop from "@/components/ui/BackToTop";
 import React from "react";
 
 export default function layout({ children }) {
@@ -6,6 +7,7 @@ export default function layout({ children }) {
     <div>
       <Navbar />
       {children}
+      <BackToTop />
     </div>
   );
 }

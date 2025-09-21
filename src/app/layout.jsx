@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Suspense } from "react";
 import Loading from "../components/loading";
+import BackToTop from "@/components/ui/BackToTop";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -10,9 +11,9 @@ const inter = Inter({
 });
 
 const kanit = Kanit({
-  subsets: ["latin", "latin-ext", "thai"], 
-  weight: ["300", "400", "500", "600", "700"], 
-  variable: "--font-kanit", 
+  subsets: ["latin", "latin-ext", "thai"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-kanit",
 });
 
 export const metadata = {
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       <body className={`${kanit.variable} antialiased`}>
         <Toaster position="top-right" richColors />
         {children}
+        <BackToTop />
       </body>
     </html>
   );

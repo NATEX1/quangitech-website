@@ -2,11 +2,22 @@
 
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import RecentWorks from "@/components/RecentWorks";
+import Footer from "@/components/ui/footer";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import Contact from "@/components/contact";
 
 export default function Page() {
   const [services, setServices] = useState([]);
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -26,6 +37,49 @@ export default function Page() {
 
     fetchServices();
   }, []);
+
+  const works = [
+    {
+      id: 1,
+      image: "img/port3.png",
+    },
+    {
+      id: 2,
+      image: "img/port4.png",
+    },
+    {
+      id: 3,
+      image: "img/port5.png",
+    },
+    {
+      id: 4,
+      image: "img/port7.png",
+    },
+    {
+      id: 5,
+      image: "img/port8.png",
+    },
+    {
+      id: 6,
+      image: "img/port6.png",
+    },
+  ];
+
+  const clients = [
+    "/img/client1.png",
+    "/img/client2.png",
+    "/img/client3.png",
+    "/img/client4.png", 
+    "/img/client5.png",
+    "/img/client6.png",
+    "/img/client7.png",
+    "/img/client8.png",
+    "/img/client1.png",
+    "/img/client2.png",  
+    "/img/client3.png",
+    "/img/client4.png",  
+  ];
+
   return (
     <div>
       <section className="relative w-full h-[800px]">
@@ -49,18 +103,18 @@ export default function Page() {
               ไปจนถึงการสร้างสรรค์เทคโนโลยีที่ตอบโจทย์ธุรกิจ
               เพื่อช่วยให้องค์กรของคุณเติบโตอย่างมั่นคงในยุคดิจิทัล
             </p>
-            <div className="flex gap-4" data-aos="fade-up" data-aos-delay="200">
+            <div className="flex gap-4">
               <Button
-                className={
-                  "bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full"
-                }
+                data-aos="fade-up"
+                data-aos-delay="600"
+                className="bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full"
               >
                 ข้อมูลองค์กร
               </Button>
               <Button
-                className={
-                  "bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full"
-                }
+                data-aos="fade-up"
+                data-aos-delay="700"
+                className="bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full"
               >
                 ติดต่อเรา
               </Button>
@@ -83,45 +137,54 @@ export default function Page() {
             เรามีทีมงานมืออาชีพที่มีความเชี่ยวชาญและประสบการณ์มากกว่า 10 ปี
           </p>
           <div className="space-y-2">
-            <div className="flex gap-6">
+            <div className="flex mt-3" data-aos="zoom-in" data-aos-delay="300">
               <div>
-                <img src="/icon2.png" width={60} height={60} alt="" />
+                <img
+                  className="w-16 h-16 rounded-full transition-transform duration-500 hover:scale-x-[-1]"
+                  src="img/icon2.png"
+                  alt=""
+                />
               </div>
-              <div>
-                <h4 className="text-2xl text-[#1573b2] font-semibold mb-2">
-                  มาตรฐานสากล
-                </h4>
-                <p className="text-[#565656]">
+              <div className="ml-4 flex-1 self-center">
+                <h4 className="text-xl font-medium mb-2 text-[#1573b2]">มาตรฐานสากล</h4>
+                <p className="text-gray-700">
                   บริการเราใช้มาตรฐานการพัฒนาระดับสากลและกระบวนการที่ได้รับการรับรอง
                 </p>
               </div>
             </div>
-            <div className="flex gap-6">
+
+            <div className="flex mt-3" data-aos="zoom-in" data-aos-delay="300">
               <div>
-                <img src="/icon2.png" width={60} height={60} alt="" />
+                <img
+                  className="w-16 h-16 rounded-full transition-transform duration-500 hover:scale-x-[-1]"
+                  src="img/icon3.png"
+                  alt=""
+                />
               </div>
-              <div>
-                <h4 className="text-2xl text-[#1573b2] font-semibold mb-2">
-                  มาตรฐานสากล
-                </h4>
-                <p className="text-[#565656]">
-                  บริการเราใช้มาตรฐานการพัฒนาระดับสากลและกระบวนการที่ได้รับการรับรอง
+              <div className="ml-4 flex-1 self-center">
+                <h4 className="text-xl font-medium mb-2 text-[#1573b2]">บริการให้คำปรึกษา</h4>
+                <p className="text-gray-700">
+                  เราพร้อมที่จะให้คำปรึกษา ออกแบบ และพัฒนาโซลูชันที่เหมาะสมกับธุรกิจของคุณอย่างครบวงจร
                 </p>
               </div>
             </div>
-            <div className="flex gap-6">
+
+            <div className="flex mt-3" data-aos="zoom-in" data-aos-delay="300">
               <div>
-                <img src="/icon2.png" width={60} height={60} alt="" />
+                <img
+                  className="w-16 h-16 rounded-full transition-transform duration-500 hover:scale-x-[-1]"
+                  src="img/icon4.png"
+                  alt=""
+                />
               </div>
-              <div>
-                <h4 className="text-2xl text-[#1573b2] font-semibold mb-2">
-                  มาตรฐานสากล
-                </h4>
-                <p className="text-[#565656]">
-                  บริการเราใช้มาตรฐานการพัฒนาระดับสากลและกระบวนการที่ได้รับการรับรอง
+              <div className="ml-4 flex-1 self-center">
+                <h4 className="text-xl font-medium mb-2 text-[#1573b2]">ความปลอดภัยสูง</h4>
+                <p className="text-gray-700">
+                  ระบบของเราออกแบบด้วยมาตรการรักษาความปลอดภัยชั้นนำ
                 </p>
               </div>
             </div>
+
           </div>
         </div>
         <div className="flex-1 p-4">
@@ -156,11 +219,14 @@ export default function Page() {
             และกลยุทธ์ เพื่อสร้างโซลูชันที่ <br /> ทันสมัย
             ช่วยให้ธุรกิจของคุณเติบโตได้อย่างมั่นคงในยุคดิจิทัล
           </p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-6" data-aos="slide-up" data-aos-duration="1500">
             {services.map((service, index) => (
               <div
                 key={index}
-                className="bg-white shadow p-4 rounded-2xl flex flex-col items-center justify-between"
+                className="bg-white p-8 rounded-2xl flex flex-col items-center justify-between transition-transform transform duration-300 hover:-translate-y-2 hover:shadow-xl"
+                style={{
+                  boxShadow: "0px 0px 20px 0px rgba(0, 0, 0, 0.2)"
+                }}
               >
                 <h4 className="text-[#ffb87a] text-2xl font-semibold text-center">
                   {service.title}
@@ -169,8 +235,8 @@ export default function Page() {
                   {service.excerpt}
                 </p>
                 <div>
-                  <Button className="bg-[#ffb87a] rounded-full w-full hover:bg-[#ffb87a] cursor-pointer">
-                    Learn moresdsada
+                  <Button className="bg-[#ffb87a] rounded-full w-full hover:bg-[#FFA500] cursor-pointer">
+                    Learn more
                   </Button>
                 </div>
               </div>
@@ -194,6 +260,57 @@ export default function Page() {
           </svg>
         </div>
       </section>
+
+      <RecentWorks works={works} />
+      <Contact />
+
+      <section className="relative pt-30 pb-30">
+        <div
+          className="absolute inset-0 bg-cover bg-start h-[600p]"
+          style={{ backgroundImage: "url('/img/cta_bg.jpg')" }}
+        ></div>
+
+        <div className="absolute inset-0 bg-[#216452]/90 h-[600p]"></div>
+
+        <div className="relative max-w-[1140px] mx-auto text-center px-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#ffb87a]">
+            Looking for the best digital agency and marketing solution?
+          </h2>
+          <p className="mt-4 text-white/90 hidden sm:block">
+            เรามีบริการครบวงจรด้านซอฟต์แวร์ เทคโนโลยีสารสนเทศ และดิจิทัล
+            ไม่ว่าจะเป็นการพัฒนาเว็บไซต์ แอปพลิเคชัน การจัดการฐานข้อมูล และการอบรมคอมพิวเตอร์
+          </p>
+          <Link href="/contact" passHref>
+            <Button className="mt-6 bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full">
+              ติดต่อเรา
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      <section className="bg-gray-100 mt-24 mb-24 py-16">
+        <div className="max-w-[1140px] mx-auto text-center px-4">
+          {/* h2 อยู่นอก bg */}
+          <h2 className="text-3xl font-bold mb-8">our valued clients</h2>
+
+          {/* กล่องสีพื้นหลัง */}
+          <div className="bg-[#f1f1f1] p-6">
+            <div className="grid grid-cols-2 sm:grid-cols-6 md:grid-cols-6 gap-10">
+              {clients.map((logo, idx) => (
+                <img
+                  key={idx}
+                  src={logo}
+                  alt={`client ${idx + 1}`}
+                  className="w-full h-auto object-contain rounded-md shadow-lg"
+                />
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
