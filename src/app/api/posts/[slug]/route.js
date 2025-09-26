@@ -13,6 +13,9 @@ export async function GET(req, { params }) {
   try {
     const post = await prisma.post.findUnique({
       where: { slug },
+      include: {
+        category: true
+      }
     });
 
     if (!post) {

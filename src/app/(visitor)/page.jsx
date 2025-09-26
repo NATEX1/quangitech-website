@@ -20,7 +20,7 @@ import {
   FaHeadset,
   FaMicrochip,
   FaUserTie,
-  FaHandshake
+  FaHandshake,
 } from "react-icons/fa";
 
 // Swiper
@@ -34,7 +34,6 @@ import "swiper/css/pagination";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-
 export default function Page() {
   const [services, setServices] = useState([]);
 
@@ -47,8 +46,11 @@ export default function Page() {
     const fetchServices = async () => {
       try {
         const res = await fetch("/api/posts");
+        
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
+        console.log(data);
+        
         setServices(data);
       } catch (err) {
         console.error(err);
@@ -107,23 +109,23 @@ export default function Page() {
     {
       icon: FaRocket,
       title: "พัฒนาเร็ว ทันใจ",
-      description: "ทำงานรวดเร็ว มอบงานตรงเวลา พร้อมให้บริการตลอด 24 ชั่วโมง"
+      description: "ทำงานรวดเร็ว มอบงานตรงเวลา พร้อมให้บริการตลอด 24 ชั่วโมง",
     },
     {
       icon: FaUsers,
       title: "ทีมงานมืออาชีพ",
-      description: "ทีมงานมีประสบการณ์กว่า 5 ปี พร้อมให้คำปรึกษาอย่างเชี่ยวชาญ"
+      description: "ทีมงานมีประสบการณ์กว่า 5 ปี พร้อมให้คำปรึกษาอย่างเชี่ยวชาญ",
     },
     {
       icon: FaShieldAlt,
       title: "มาตรฐานคุณภาพ",
-      description: "รับประกันคุณภาพงาน พร้อมบริการหลังการขายอย่างต่อเนื่อง"
+      description: "รับประกันคุณภาพงาน พร้อมบริการหลังการขายอย่างต่อเนื่อง",
     },
     {
       icon: FaHeadset,
       title: "บริการครบวงจร",
-      description: "ให้คำปรึกษา พัฒนา และดูแลระบบแบบครบวงจรในที่เดียว"
-    }
+      description: "ให้คำปรึกษา พัฒนา และดูแลระบบแบบครบวงจรในที่เดียว",
+    },
   ];
 
   return (
@@ -205,26 +207,35 @@ export default function Page() {
               {
                 icon: FaMicrochip,
                 title: "นวัตกรรมและเทคโนโลยี",
-                text: "มุ่งเน้นการพัฒนาโซลูชันด้วยเทคโนโลยีล้ำสมัย รองรับการเปลี่ยนแปลงในอนาคต"
+                text: "มุ่งเน้นการพัฒนาโซลูชันด้วยเทคโนโลยีล้ำสมัย รองรับการเปลี่ยนแปลงในอนาคต",
               },
               {
                 icon: FaUserTie,
                 title: "ความเชี่ยวชาญและประสบการณ์",
-                text: "ทีมงานมีประสบการณ์กว่า 10 ปีในด้าน Quantum, Digital และ IT"
+                text: "ทีมงานมีประสบการณ์กว่า 10 ปีในด้าน Quantum, Digital และ IT",
               },
               {
                 icon: FaHandshake,
                 title: "พันธมิตรเพื่อการเติบโต",
-                text: "สร้างความร่วมมือระยะยาว เพื่อขับเคลื่อนธุรกิจให้เติบโตอย่างยั่งยืน"
+                text: "สร้างความร่วมมือระยะยาว เพื่อขับเคลื่อนธุรกิจให้เติบโตอย่างยั่งยืน",
               },
             ].map((item, i) => (
-              <div key={i} className="flex gap-4 items-start" data-aos="fade-up" data-aos-delay={200 * i}>
+              <div
+                key={i}
+                className="flex gap-4 items-start"
+                data-aos="fade-up"
+                data-aos-delay={200 * i}
+              >
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
                   <item.icon className="text-blue-500 text-xl" />
                 </div>
                 <div>
-                  <h4 className="text-base md:text-lg font-medium text-gray-800 leading-snug">{item.title}</h4>
-                  <p className="text-sm md:text-base font-light text-gray-600 leading-relaxed">{item.text}</p>
+                  <h4 className="text-base md:text-lg font-medium text-gray-800 leading-snug">
+                    {item.title}
+                  </h4>
+                  <p className="text-sm md:text-base font-light text-gray-600 leading-relaxed">
+                    {item.text}
+                  </p>
                 </div>
               </div>
             ))}
@@ -241,7 +252,8 @@ export default function Page() {
               className="w-[500px] h-[450px] object-contain"
               onError={(e) => {
                 // Fallback ถ้ารูปภาพไม่พบ
-                e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
+                e.target.src =
+                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
               }}
             />
           </div>
@@ -282,50 +294,72 @@ export default function Page() {
                 data-aos-delay={i * 150}
               >
                 {/* Subtle gradient overlay */}
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ffb87a] via-[#ff9a56] to-[#ffb87a] rounded-t-3xl 
-                      transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"></div>
+                <div
+                  className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ffb87a] via-[#ff9a56] to-[#ffb87a] rounded-t-3xl 
+                      transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"
+                ></div>
 
                 {/* Icon placeholder - you can add your service icon here */}
-                <div className="w-12 h-12 bg-gradient-to-br from-[#ffb87a] to-[#ff9a56] rounded-2xl mb-6 
+                <div
+                  className="w-12 h-12 bg-gradient-to-br from-[#ffb87a] to-[#ff9a56] rounded-2xl mb-6 
                       flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 
-                      transition-all duration-500 shadow-lg shadow-orange-200/30">
+                      transition-all duration-500 shadow-lg shadow-orange-200/30"
+                >
                   <div className="w-6 h-6 bg-white rounded-lg opacity-90"></div>
                 </div>
 
-                <h4 className="text-gray-800 text-xl font-semibold mb-4 group-hover:text-[#ff9a56] 
-                     transition-colors duration-300 leading-tight">
+                <h4
+                  className="text-gray-800 text-xl font-semibold mb-4 group-hover:text-[#ff9a56] 
+                     transition-colors duration-300 leading-tight"
+                >
                   {service.title}
                 </h4>
 
-                <p className="text-gray-600 text-sm md:text-base font-normal leading-relaxed mb-8 
-                    group-hover:text-gray-700 transition-colors duration-300">
+                <p
+                  className="text-gray-600 text-sm md:text-base font-normal leading-relaxed mb-8 
+                    group-hover:text-gray-700 transition-colors duration-300"
+                >
                   {service.excerpt}
                 </p>
 
-                <Button
-                  className="relative bg-gradient-to-r from-[#ffb87a] to-[#ff9a56] hover:from-[#ff9a56] hover:to-[#e6935a] 
+                <Link href={`/servicedetail/${service.slug}`}>
+                  <Button
+                    className="relative bg-gradient-to-r from-[#ffb87a] to-[#ff9a56] hover:from-[#ff9a56] hover:to-[#e6935a] 
                    text-white font-medium rounded-2xl px-8 py-3 
                    transform group-hover:scale-105 transition-all duration-300 
                    shadow-lg shadow-orange-200/40 hover:shadow-xl hover:shadow-orange-200/50
                    before:absolute before:inset-0 before:rounded-2xl before:bg-white/20 before:opacity-0 
                    hover:before:opacity-100 before:transition-all before:duration-300
                    overflow-hidden"
-                  onClick={() => window.location.href = `/servicedetail?id=${service.id}`}
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Learn more
-                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
-                      fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </span>
-                </Button>
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      Learn more
+                      <svg
+                        className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </span>
+                  </Button>
+                </Link>
 
                 {/* Floating elements for extra visual interest */}
-                <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-orange-100/40 to-transparent 
-                      rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-orange-50/60 to-transparent 
-                      rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100"></div>
+                <div
+                  className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-orange-100/40 to-transparent 
+                      rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"
+                ></div>
+                <div
+                  className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-orange-50/60 to-transparent 
+                      rounded-full blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100"
+                ></div>
               </div>
             ))}
           </div>
@@ -336,7 +370,6 @@ export default function Page() {
 
       <section className="bg-gradient-to-br from-gray-50 to-white py-20">
         <div className="max-w-[1140px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-
           {/* Left Content - Text */}
           <div data-aos="fade-right" className="space-y-8">
             <div>
@@ -406,7 +439,8 @@ export default function Page() {
                 className="w-[600px] h-[500px] object-contain"
                 onError={(e) => {
                   // Fallback ถ้ารูปภาพไม่พบ
-                  e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
+                  e.target.src =
+                    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
                 }}
               />
             </div>
@@ -462,7 +496,7 @@ export default function Page() {
                 1280: {
                   slidesPerView: 7,
                   spaceBetween: 70,
-                }
+                },
               }}
               className="clients-swiper"
             >

@@ -3,12 +3,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Footer from "@/components/ui/footer";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
 
 export default function ServiceDetail() {
-  const searchParams = useSearchParams();
-  const serviceId = searchParams.get("id");
-
+  const params = useParams();
+  const slug = params.slug;
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,9 +19,11 @@ export default function ServiceDetail() {
   useEffect(() => {
     const fetchService = async () => {
       try {
-        const res = await fetch(`/api/posts?id=${serviceId}`);
+        const res = await fetch(`/api/posts/${slug}`);
         if (!res.ok) throw new Error("Failed to fetch service details");
         const data = await res.json();
+        console.log(data);
+
         setService(data);
         setMainImage(data?.image || null);
       } catch (err) {
@@ -31,8 +33,8 @@ export default function ServiceDetail() {
       }
     };
 
-    if (serviceId) fetchService();
-  }, [serviceId]);
+    if (slug) fetchService();
+  }, [slug]);
 
   if (loading) return <p className="text-center py-20">Loading...</p>;
   if (error) return <p className="text-center py-20 text-red-500">{error}</p>;
@@ -58,9 +60,9 @@ export default function ServiceDetail() {
       <div className="max-w-[1200px] mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row gap-12">
         <div className="md:w-1/2 flex flex-col gap-6">
           <div className="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 flex items-center justify-center bg-white">
-            {mainImage && (
+            {service.thumbnail && (
               <img
-                src={mainImage}
+                src={service.thumbnail}
                 alt={service.title}
                 className="max-w-full max-h-full object-contain bg-white transition-transform duration-300 ease-in-out"
               />
@@ -124,22 +126,21 @@ export default function ServiceDetail() {
 
         <div className="bg-gray-100 rounded-xl border-2 border-gray-200 p-6 md:w-1/2 flex flex-col justify-start">
           <span className="text-sm text-gray-500 mb-2">
-            {service.date} | {service.category}
+            {new Date(service.createdAt).toLocaleDateString("th-TH", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })}{" "}
+            | {service.category.name}
           </span>
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             {service.title}
           </h2>
           <p className="text-gray-700 mb-4">{service.description}</p>
-          {service.content && (
-            <ul className="list-disc list-inside text-gray-600 leading-relaxed space-y-4">
-              {service.content.map((line, idx) => (
-                <li key={idx}>
-                  <strong className="text-gray-800">{line.title}:</strong>{" "}
-                  <span>{line.detail}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <div
+            className="prose max-w-full text-gray-700"
+            dangerouslySetInnerHTML={{ __html: service.content }}
+          />
         </div>
       </div>
 
