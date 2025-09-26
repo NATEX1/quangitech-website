@@ -26,12 +26,12 @@ import { ArrowUpDown, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
 import Loading from "@/components/loading";
 
-
 export default function categories() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");categories
+  const [slug, setSlug] = useState("");
+  categories;
   const [description, setDescription] = useState("");
   const [sorting, setSorting] = useState([]);
 
@@ -67,6 +67,7 @@ export default function categories() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ name, slug, description }),
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Failed to create category");
@@ -88,6 +89,7 @@ export default function categories() {
     try {
       const res = await fetch(`/api/categories/${categoryId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -100,7 +102,7 @@ export default function categories() {
       setCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
     } catch (error) {
       console.error("Error deleting category:", error);
-      toast.error((error).message || "Error deleting category");
+      toast.error(error.message || "Error deleting category");
     }
   };
 
@@ -118,7 +120,7 @@ export default function categories() {
           </div>
         ),
         cell: ({ row }) => {
-          const name = row.getValue("name") ;
+          const name = row.getValue("name");
           const id = row.original.id;
           return (
             <div>
@@ -146,7 +148,7 @@ export default function categories() {
           const description = row.getValue("description");
           return (
             <div className={description ? "" : "text-gray-400"}>
-              {(description) || "no description"}
+              {description || "no description"}
             </div>
           );
         },

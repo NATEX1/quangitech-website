@@ -3,7 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { CopyPlus, Trash, ChevronDown, GripVertical, Copy, Plus } from "lucide-react";
+import {
+  CopyPlus,
+  Trash,
+  ChevronDown,
+  GripVertical,
+  Copy,
+  Plus,
+} from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -32,7 +39,6 @@ import {
 import { toast } from "sonner";
 import Loading from "@/components/loading";
 
-// ✅ แก้ไข SortableItem - ใช้ CSS transform และ transition ที่ดีขึ้น
 function SortableItem({ id, children, isDragging }) {
   const {
     attributes,
@@ -124,7 +130,8 @@ function MenuItemCard({
                 <span className="font-semibold truncate">{item.name}</span>
                 {item.children && item.children.length > 0 && (
                   <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                    {item.children.length} submenu{item.children.length > 1 ? 's' : ''}
+                    {item.children.length} submenu
+                    {item.children.length > 1 ? "s" : ""}
                   </span>
                 )}
               </div>
@@ -147,9 +154,9 @@ function MenuItemCard({
               <div className="flex gap-2 ml-2">
                 {/* Add submenu button - only for parent items */}
                 {!isChild && (
-                  <Button 
-                    size="icon" 
-                    variant="outline" 
+                  <Button
+                    size="icon"
+                    variant="outline"
                     onClick={handleAddSubmenu}
                     className="h-8 w-8"
                     title="Add submenu item"
@@ -179,9 +186,10 @@ function MenuItemCard({
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
               menu item "{item.name}"
-              {item.children && item.children.length > 0 && 
-                ` and all its ${item.children.length} submenu item(s)`
-              }.
+              {item.children &&
+                item.children.length > 0 &&
+                ` and all its ${item.children.length} submenu item(s)`}
+              .
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -248,7 +256,6 @@ function RenderMenuItem({
   );
 }
 
-// ✅ AddSubmenuSheet component
 function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -258,7 +265,7 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch("/api/menu-items", {
         method: "POST",
@@ -273,7 +280,7 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
       });
 
       if (!response.ok) throw new Error("Failed to create submenu item");
-      
+
       const newItem = await response.json();
       onAdd(newItem);
       setFormData({ name: "", url: "" });
@@ -298,7 +305,9 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full px-3 py-2 border rounded-md"
               required
             />
@@ -308,16 +317,18 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
             <input
               type="text"
               value={formData.url}
-              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, url: e.target.value })
+              }
               className="w-full px-3 py-2 border rounded-md"
               placeholder="/submenu-page"
               required
             />
           </div>
           <div className="flex gap-2 justify-end">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
             >
               Cancel
@@ -330,14 +341,17 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
   );
 }
 
-// Main Menus component
 export default function Menus() {
   const [menus, setMenus] = useState([]);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [draggingItemId, setDraggingItemId] = useState(null);
   const [draggingItem, setDraggingItem] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [submenuSheet, setSubmenuSheet] = useState({ open: false, parentItem: null, menu: null });
+  const [submenuSheet, setSubmenuSheet] = useState({
+    open: false,
+    parentItem: null,
+    menu: null,
+  });
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -347,7 +361,6 @@ export default function Menus() {
         if (!res.ok) throw new Error("Failed to fetch menus");
         const data = await res.json();
         setMenus(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching menus:", error);
       } finally {
@@ -387,20 +400,20 @@ export default function Menus() {
     // Find the parent item and menu
     let parentItem = null;
     let parentMenu = null;
-    
+
     for (const menu of menus) {
-      parentItem = menu.items.find(item => item.id === parentId);
+      parentItem = menu.items.find((item) => item.id === parentId);
       if (parentItem) {
         parentMenu = menu;
         break;
       }
     }
-    
+
     if (parentItem && parentMenu) {
-      setSubmenuSheet({ 
-        open: true, 
-        parentItem, 
-        menu: parentMenu 
+      setSubmenuSheet({
+        open: true,
+        parentItem,
+        menu: parentMenu,
       });
     }
   };
@@ -409,21 +422,25 @@ export default function Menus() {
     setMenus((prevMenus) =>
       prevMenus.map((menu) => {
         if (menu.id !== submenuSheet.menu.id) return menu;
-        
+
         const updateItems = (items) =>
           items.map((item) => {
             if (item.id === submenuSheet.parentItem.id) {
               return {
                 ...item,
-                children: [...(item.children || []), newSubmenuItem].sort((a, b) => a.sortOrder - b.sortOrder)
+                children: [...(item.children || []), newSubmenuItem].sort(
+                  (a, b) => a.sortOrder - b.sortOrder
+                ),
               };
             }
             return {
               ...item,
-              children: item.children ? updateItems(item.children) : item.children
+              children: item.children
+                ? updateItems(item.children)
+                : item.children,
             };
           });
-        
+
         return { ...menu, items: updateItems(menu.items) };
       })
     );
@@ -490,7 +507,9 @@ export default function Menus() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Menus</h1>
-          <p className="text-sm text-muted-foreground">Manage your menus and submenus</p>
+          <p className="text-sm text-muted-foreground">
+            Manage your menus and submenus
+          </p>
         </div>
       </div>
 
@@ -511,8 +530,10 @@ export default function Menus() {
           >
             <div className="flex-1 font-medium">{menu.name}</div>
             <div className="w-36 text-center text-muted-foreground">
-              {menu.items.reduce((total, item) => 
-                total + 1 + (item.children ? item.children.length : 0), 0
+              {menu.items.reduce(
+                (total, item) =>
+                  total + 1 + (item.children ? item.children.length : 0),
+                0
               )}
             </div>
             <ChevronDown

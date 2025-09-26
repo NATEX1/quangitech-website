@@ -1,4 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
+import { verifyToken } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -8,23 +9,34 @@ export async function POST(req) {
     const body = await req.json();
     const { menuId, name, url, parentId } = body;
 
+    const token = req.cookies.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await verifyToken(token);
+    if (!payload?.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     let sortOrder;
 
     if (parentId) {
       const maxSort = await prisma.menuItem.aggregate({
         _max: { sortOrder: true },
-        where: { 
+        where: {
           menuId,
-          parentId: parentId
+          parentId: parentId,
         },
       });
       sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
     } else {
       const maxSort = await prisma.menuItem.aggregate({
         _max: { sortOrder: true },
-        where: { 
+        where: {
           menuId,
-          parentId: null
+          parentId: null,
         },
       });
       sortOrder = (maxSort._max.sortOrder ?? 0) + 1;

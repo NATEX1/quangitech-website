@@ -39,7 +39,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload =  verifyToken(token);
+    const payload = await verifyToken(token);
     console.log("payload: ", payload);
 
     if (!payload) {
