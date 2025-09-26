@@ -84,3 +84,4 @@ model MenuItem {
 
   @@map("menu_items")
 }
+

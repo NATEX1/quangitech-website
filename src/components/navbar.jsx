@@ -20,7 +20,9 @@ function MenuItem({ item, scrolled, isMobile, onMenuClick }) {
     <NavigationMenuItem>
       {hasChildren ? (
         <>
-          <NavigationMenuTrigger className={`${scrolled ? 'text-black' : 'text-white'}`}>
+          <NavigationMenuTrigger
+            className={`${scrolled ? "text-gray-900" : "text-white"}`}
+          >
             {item.name}
           </NavigationMenuTrigger>
           <NavigationMenuContent className="bg-white shadow-lg rounded-md p-2 border min-w-[200px]">
@@ -29,7 +31,7 @@ function MenuItem({ item, scrolled, isMobile, onMenuClick }) {
                 <li key={child.id}>
                   <Link
                     href={child.href || "#"}
-                    className="block px-4 py-2 rounded-md  text-sm text-gray-700 transition-colors"
+                    className="block px-4 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                     onClick={isMobile ? onMenuClick : undefined}
                   >
                     {child.name}
@@ -43,10 +45,8 @@ function MenuItem({ item, scrolled, isMobile, onMenuClick }) {
         <NavigationMenuLink asChild>
           <Link
             href={item.href || "#"}
-            className={`transition-colors duration-200 px-4 py-2 rounded-md data-active:bg-transparent ${
-              scrolled
-                ? ""
-                : "text-white "
+            className={`transition-colors duration-200 px-4 py-2 rounded-md ${
+              scrolled ? "text-gray-900" : "text-white"
             }`}
             onClick={isMobile ? onMenuClick : undefined}
           >
@@ -73,7 +73,6 @@ export default function Navbar() {
         setMenuData(data[0]?.items || []);
       } catch (err) {
         console.error("Failed to fetch menu", err);
-        // ใส่ข้อมูล fallback สำหรับการทดสอบ
         setMenuData([
           { id: 1, name: "หน้าแรก", href: "/" },
           {
@@ -89,20 +88,15 @@ export default function Navbar() {
         ]);
       }
     };
-
     fetchMenu();
   }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // เปลี่ยนสีเมื่อ scroll มากกว่า 10px
       setScrolled(currentScrollY > 10);
 
-      // ซ่อน navbar เมื่อ scroll ลง, แสดงเมื่อ scroll ขึ้น
       if (currentScrollY > 100) {
-        // เริ่มซ่อนหลัง scroll 100px
         if (currentScrollY > lastScrollY && currentScrollY > 200) {
           setShowNavbar(false);
         } else if (currentScrollY < lastScrollY) {
@@ -111,11 +105,9 @@ export default function Navbar() {
       } else {
         setShowNavbar(true);
       }
-
       setLastScrollY(currentScrollY);
     };
 
-    // Throttle scroll event
     let ticking = false;
     const throttledScroll = () => {
       if (!ticking) {
@@ -131,14 +123,12 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", throttledScroll);
   }, [lastScrollY]);
 
-  // ปิด mobile menu เมื่อ resize หน้าจอ
   React.useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setMobileMenuOpen(false);
       }
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -156,8 +146,8 @@ export default function Navbar() {
       <header
         className={`fixed w-full transition-all duration-300 ease-in-out ${
           scrolled
-            ? "bg-white/95 backdrop-blur-sm shadow-lg "
-            : " bg-transparent"
+            ? "bg-white/95 backdrop-blur-sm shadow-lg"
+            : "bg-transparent"
         } ${showNavbar ? "translate-y-0" : "-translate-y-full"} z-50`}
       >
         <div
@@ -173,14 +163,14 @@ export default function Navbar() {
               width={scrolled ? 80 : 100}
               height={scrolled ? 40 : 50}
               priority
-              className="transition-all duration-300"
+              className="transition-all duration-300 w-auto h-auto max-h-14"
             />
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <NavigationMenu>
-              <NavigationMenuList className="space-x-2">
+              <NavigationMenuList className="space-x-4">
                 {menuData.map((item) => (
                   <MenuItem key={item.id} item={item} scrolled={scrolled} />
                 ))}

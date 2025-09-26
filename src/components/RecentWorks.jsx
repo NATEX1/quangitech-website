@@ -1,114 +1,113 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
+import { ExternalLink, } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 
-export default function RecentWorks({ works }) {
-  const [isClient, setIsClient] = useState(false);
+import Link from "next/link";
+import "swiper/css";
+import "swiper/css/pagination";
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+const related = [
+    { id: 1, title: "Web Project", img: "/img/port3.png" },
+    { id: 2, title: "Web Project", img: "/img/port4.png" },
+    { id: 3, title: "Web Project", img: "/img/port5.png" },
+    { id: 4, title: "Web Project", img: "/img/port7.png" },
+    { id: 5, title: "Web Project", img: "/img/port8.png" },
+];
 
-  if (!isClient) return null;
-
-  return (
-    <section className="bg-[#216452] py-16 text-white relative">
-      <div className="max-w-[1140px] mx-auto text-center relative">
-        <h2
-          className="text-3xl font-bold text-[#ffb87a] mb-2"
-          data-aos="zoom-out"
-          data-aos-duration="2400"
-        >
-          our recent works
-        </h2>
-        <p
-          className="mb-10 text-sm md:text-base text-white/90"
-          data-aos="zoom-out"
-          data-aos-duration="2500"
-        >
-          ผลงานตัวอย่างที่แสดงถึงความเชี่ยวชาญและคุณภาพการทำงานของเรา
-          ครอบคลุมตั้งแต่การออกแบบ พัฒนา และให้คำปรึกษาด้านดิจิทัล
-        </p>
-
-        <div className="absolute top-[220px] -left-20 flex items-center z-20">
-          <div className="swiper-button-prev-custom
-                    w-12 h-12 flex items-center justify-center
-                    rounded-full bg-white/80 hover:bg-white
-                    text-[#216452] text-3xl cursor-pointer shadow-md">
-            ❮
-          </div>
-        </div>
-        <div className="absolute top-[220px] -right-20 flex items-center z-20">
-          <div className="swiper-button-next-custom
-                    w-12 h-12 flex items-center justify-center
-                    rounded-full bg-white/80 hover:bg-white
-                    text-[#216452] text-3xl cursor-pointer shadow-md">
-            ❯
-          </div>
-        </div>
-
-        <Swiper
-          modules={[Navigation, Pagination]}
-          spaceBetween={30}
-          slidesPerView={3}
-          loop={true}
-          navigation={{
-            nextEl: ".swiper-button-next-custom",
-            prevEl: ".swiper-button-prev-custom",
-          }}
-          pagination={{ el: ".custom-pagination", clickable: true }}
-          className="mb-8 relative"
-        >
-          {works.map((work) => (
-            <SwiperSlide key={work.id}>
-              <div
-                className="relative bg-white shadow overflow-hidden"
-                data-aos="flip-left"
-                data-aos-delay="1000"
-              >
-                <img
-                  src={work.image}
-                  alt={`work ${work.id}`}
-                  className="w-full h-auto"
-                />
-
-                <a
-                  href="/#"
-                  className="absolute inset-0 flex flex-col items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity duration-400"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, rgba(29,164,128,0.6) 0%, rgba(33,100,82,0.6) 100%)",
-                    backdropFilter: "blur(3px)",
-                  }}
+export default function RecentWorks() {
+    return (
+        <div className="bg-gray-100 py-16">
+            <div className="max-w-[1400px] mx-auto px-4">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h3 className="text-2xl font-medium text-gray-800 tracking-[0.2em] uppercase relative inline-block">
+                        ผลงานที่ผ่านมา
+                        <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-22 h-1 bg-orange-400 rounded-full"></span>
+                    </h3>
+                    <p className="mt-4 text-sm md:text-base text-gray-600 leading-[1.8] font-light max-w-2xl mx-auto mb-4">
+                        ตัวอย่างผลงาน ทำเว็บไซต์ช่วยสร้างความหน้าเชื่อถือ และออกแบบมาเพื่อช่วยเพิ่มการเข้าถึงกลุ่มลูกค้าบนโลกออนไลน์มากขึ้น
+                    </p>
+                </div>
+                {/* Swiper Carousel */}
+                <Swiper
+                    spaceBetween={24}
+                    loop
+                    modules={[Pagination, Autoplay]}
+                    autoplay={{ delay: 3000 }}
+                    breakpoints={{
+                        320: { slidesPerView: 1, spaceBetween: 12 },
+                        640: { slidesPerView: 2, spaceBetween: 16 },
+                        1024: { slidesPerView: 3, spaceBetween: 20 },
+                        1280: { slidesPerView: 4, spaceBetween: 24 },
+                    }}
                 >
-                  <h3 className="text-xl font-semibold mb-2">ระบบ (SAR)</h3>
-                  <p className="text-sm">System Development</p>
-                </a>
+                    {related.map((item) => (
+                        <SwiperSlide key={item.id}>
+                            <div className="relative group rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 bg-white">
+                                {/* รูปภาพ */}
+                                <div className="relative overflow-hidden">
+                                    <img
+                                        src={item.img}
+                                        alt={item.title}
+                                        className="w-full h-56 sm:h-60 object-cover transition-transform duration-500 group-hover:scale-105"
+                                    />
 
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+                                    {/* Gradient Overlay สำหรับอ่านง่ายขึ้น */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                                </div>
 
-        <div
-          className="custom-pagination flex justify-center mt-6
-    [&_.swiper-pagination-bullet]:!bg-white
-    [&_.swiper-pagination-bullet]:opacity-50
-    [&_.swiper-pagination-bullet-active]:!bg-white
-    [&_.swiper-pagination-bullet-active]:opacity-100
-    [&_.swiper-pagination-bullet-active]:scale-125
-    [&_.swiper-pagination-bullet]:transition-all
-    [&_.swiper-pagination-bullet]:duration-300
-  "
-        ></div>
-        <br />
-        <Button className="bg-transparent border-2 border-white hover:bg-white hover:text-black cursor-pointer rounded-full">
-          ดูเพิ่มเติม
-        </Button>
-      </div>
-    </section>
-  );
+                                {/* Content Container */}
+                                <div className="flex justify-end items-end absolute inset-0 p-6">
+                                    {/* Action Button */}
+                                    <Link
+                                        href={`/portfolio/${item.id}`}
+                                        className="inline-flex items-center gap-1 text-sm font-medium text-white bg-white/20 backdrop-blur-sm border border-white/30 px-3 py-1 rounded-full hover:bg-white/30 hover:border-white/50 transition-all duration-200 group/btn"
+                                    >
+                                        <span>ดูรายละเอียด</span>
+                                        <ExternalLink
+                                            size={14}
+                                            className="transition-transform duration-200 group-hover/btn:translate-x-0.5"
+                                        />
+                                    </Link>
+                                </div>
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+
+                {/* View All Button */}
+                <div className="flex justify-center mt-10">
+                    <Link href="/portfolio">
+                        <Button
+                            className="relative bg-gradient-to-r from-[#ffb87a] to-[#ff9a56] hover:from-[#ff9a56] hover:to-[#e6935a] 
+                   text-white font-medium rounded-2xl px-8 py-3 
+                   transform group-hover:scale-105 transition-all duration-300 
+                   shadow-lg shadow-orange-200/40 hover:shadow-xl hover:shadow-orange-200/50
+                   before:absolute before:inset-0 before:rounded-2xl before:bg-white/20 before:opacity-0 
+                   hover:before:opacity-100 before:transition-all before:duration-300
+                   overflow-hidden"
+                        >
+                            <span className="relative z-10 flex items-center gap-2">
+                                ดูผลงานทั้งหมด
+                                <svg
+                                    className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span>
+                        </Button>
+                    </Link>
+
+                </div>
+
+            </div>
+        </div>
+    );
 }
