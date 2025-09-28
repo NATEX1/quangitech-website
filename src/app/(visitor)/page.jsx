@@ -1,18 +1,12 @@
 "use client";
 
-// React
 import React, { useEffect, useState } from "react";
-
-// Next.js
 import Link from "next/link";
-
-// Components
 import { Button } from "@/components/ui/button";
 import RecentWorks from "@/components/RecentWorks";
 import CallToAction from "@/components/ui/calltoaction";
 import Footer from "@/components/ui/footer";
-
-// Icons
+import clsx from "clsx";
 import {
   FaRocket,
   FaUsers,
@@ -21,18 +15,17 @@ import {
   FaMicrochip,
   FaUserTie,
   FaHandshake,
-} from "react-icons/fa";
 
-// Swiper
+} from "react-icons/fa";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-// CSS / AOS
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import GradientButton from "@/components/ui/GradientButton";
 
 export default function Page() {
   const [services, setServices] = useState([]);
@@ -46,11 +39,11 @@ export default function Page() {
     const fetchServices = async () => {
       try {
         const res = await fetch("/api/posts");
-        
+
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
         console.log(data);
-        
+
         setServices(data);
       } catch (err) {
         console.error(err);
@@ -128,28 +121,66 @@ export default function Page() {
     },
   ];
 
+  const [activeTab, setActiveTab] = useState("news");
+
+  const items = [
+    {
+      title: "เปิดตัวโปรเจกต์ใหม่",
+      date: "25 กันยายน 2568",
+      excerpt: "เราภูมิใจเสนอโปรเจกต์ใหม่ล่าสุด...",
+      image: "/img/cont11.png",
+      slug: "new-project-launch",
+      category: "news",
+    },
+    {
+      title: "กิจกรรมสัมมนา IT",
+      date: "10 กันยายน 2568",
+      excerpt: "เข้าร่วมสัมมนา IT ฟรี พร้อมเรียนรู้...",
+      image: "/img/cont1.png",
+      slug: "it-seminar-event",
+      category: "events",
+    },
+    {
+      title: "รางวัลความเป็นเลิศด้านดิจิทัล",
+      date: "5 กันยายน 2568",
+      excerpt: "บริษัทควอนจิเทคได้รับรางวัล...",
+      image: "/img/cont2.png",
+      slug: "digital-excellence-award",
+      category: "news",
+    },
+    {
+      title: "กิจกรรมอบรมความปลอดภัยไซเบอร์",
+      date: "5 กันยายน 2568",
+      excerpt: "บริษัทควอนจิเทคได้รับรางวัล...",
+      image: "/img/cont1.png",
+      slug: "digital-excellence-award",
+      category: "news",
+    },
+  ];
+
+  // filter ตาม tab ที่เลือก
+  const filteredItems = items.filter((item) => item.category === activeTab);
+
   return (
     <div>
       <section className="relative w-full min-h-[700px] flex items-center">
-        {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/welcome_bg.jpg')" }}
         ></div>
 
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a5c48]/95 via-[#216452]/90 to-[#1a5c48]/95"></div>
 
-        {/* Content */}
         <div className="relative z-10 max-w-[1200px] mx-auto flex flex-col items-center justify-center px-6 md:px-12 text-center">
-          {/* Text Section */}
           <div
             className="flex-1 space-y-6 text-center"
             data-aos="fade-up"
             data-aos-duration="1000"
           >
             <h1 className="text-4xl sm:text-5xl lg:text-[50px] font-extrabold text-white tracking-[0.2em] uppercase leading-tight">
-              Digital & IT <span className="text-[#ffb87a]">Solutions</span>
+              Digital & IT <span className="bg-gradient-to-r from-[#ffb87a] to-[#e89f5d] bg-clip-text text-transparent animate-gradient">
+                Solutions
+              </span>
               <br /> Partner for Your Growth
             </h1>
             <p className="text-sm md:text-base text-white leading-[1.8] font-light max-w-2xl mx-auto">
@@ -157,7 +188,6 @@ export default function Page() {
               ระบบครบวงจร เพื่อช่วยขับเคลื่อนธุรกิจของคุณในยุคดิจิทัล
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6 justify-center">
               <Link href="/company">
                 <Button
@@ -175,7 +205,7 @@ export default function Page() {
                   data-aos="fade-up"
                   data-aos-delay="400"
                 >
-                  ติดต่อเรา
+                  ปรึกษาฟรี
                 </Button>
               </Link>
             </div>
@@ -185,7 +215,6 @@ export default function Page() {
 
       {/* About Section */}
       <section className="max-w-[1140px] mx-auto flex flex-col md:flex-row items-start gap-12 py-20 px-6">
-        {/* Left Content */}
         <div className="flex-1 space-y-6" data-aos="fade-right">
           <div className="inline-flex items-center space-x-3 mb-4">
             <div className="w-1 h-8 bg-gradient-to-b from-orange-400 to-orange-500 rounded-full"></div>
@@ -242,16 +271,13 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Right Image */}
         <div data-aos="fade-left" className="relative">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl border-gray-100">
-            {/* ใช้รูปภาพของคุณ */}
             <img
               src="img/default3.png"
               alt="ทีมงานมืออาชีพ"
               className="w-[500px] h-[450px] object-contain"
               onError={(e) => {
-                // Fallback ถ้ารูปภาพไม่พบ
                 e.target.src =
                   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
               }}
@@ -268,7 +294,7 @@ export default function Page() {
             data-aos="fade-up"
             data-aos-duration="1000"
           >
-            We provide the best digital services
+            บริการของ <span className="text-[#ffb87a]">quangitech</span>
           </h2>
           <p
             className="text-[#555] max-w-2xl mx-auto mb-12 leading-relaxed"
@@ -293,15 +319,13 @@ export default function Page() {
                 data-aos-duration="1000"
                 data-aos-delay={i * 150}
               >
-                {/* Subtle gradient overlay */}
                 <div
                   className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ffb87a] via-[#ff9a56] to-[#ffb87a] rounded-t-3xl 
                       transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"
                 ></div>
 
-                {/* Icon placeholder - you can add your service icon here */}
                 <div
-                  className="w-12 h-12 bg-gradient-to-br from-[#ffb87a] to-[#ff9a56] rounded-2xl mb-6 
+                  className="w-10  h-10 bg-gradient-to-br from-[#ffb87a] to-[#ff9a56] rounded-2xl mb-5 
                       flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 
                       transition-all duration-500 shadow-lg shadow-orange-200/30"
                 >
@@ -325,10 +349,10 @@ export default function Page() {
                 <Link href={`/servicedetail/${service.slug}`}>
                   <Button
                     className="relative bg-gradient-to-r from-[#ffb87a] to-[#ff9a56] hover:from-[#ff9a56] hover:to-[#e6935a] 
-                   text-white font-medium rounded-2xl px-8 py-3 
+                   text-white font-medium rounded-md px-8 py-3 
                    transform group-hover:scale-105 transition-all duration-300 
-                   shadow-lg shadow-orange-200/40 hover:shadow-xl hover:shadow-orange-200/50
-                   before:absolute before:inset-0 before:rounded-2xl before:bg-white/20 before:opacity-0 
+                   shadow-lg shadow-orange-200/40 hover:shadow-ml hover:shadow-orange-200/50
+                   before:absolute before:inset-0 before:rounded-ml before:bg-white/20 before:opacity-0 
                    hover:before:opacity-100 before:transition-all before:duration-300
                    overflow-hidden"
                   >
@@ -351,7 +375,6 @@ export default function Page() {
                   </Button>
                 </Link>
 
-                {/* Floating elements for extra visual interest */}
                 <div
                   className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-orange-100/40 to-transparent 
                       rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"
@@ -368,9 +391,91 @@ export default function Page() {
 
       <RecentWorks works={works} />
 
-      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
+      {/* News & Events Section */}
+      <section className="bg-white py-20">
+        <div className="max-w-[1140px] mx-auto px-6">
+          <div className="text-center mb-5 flex flex-col items-center" data-aos="fade-up">
+            <h2 className="text-2xl md:text-3xl font-medium text-gray-800 tracking-[0.1em] uppercase">
+              ข่าวสารและกิจกรรม
+            </h2>
+            <span className="my-2 w-24 h-1 bg-orange-400 rounded-full"></span>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              ติดตามข่าวสารและกิจกรรมล่าสุดของเรา เพื่อไม่พลาดทุกความเคลื่อนไหว
+            </p>
+          </div>
+
+          <section className="max-w-6xl mx-auto px-2">
+            <div className="flex justify-center mb-10">
+              <div className="inline-flex rounded-full overflow-hidden border border-gray-300 shadow-sm">
+                {["news", "events"].map((tab, index) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`px-6 py-2 font-medium transition-all duration-300
+          ${activeTab === tab
+                        ? "bg-gray-200 text-gray-800"       // active: สีพื้นอ่อน + ข้อความเข้ม
+                        : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-800" // inactive + hover
+                      }
+          ${index === 0 ? "rounded-l-full" : ""}
+          ${index === 1 ? "rounded-r-full" : ""}
+        `}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+              {filteredItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="group bg-white border border-gray-300 rounded-3xl overflow-hidden
+              hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:border-gray-200
+              transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm text-gray-700 
+                text-xs font-medium px-3 py-1.5 rounded-full shadow-sm">
+                      {item.date}
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2 leading-tight">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-5">
+                      {item.excerpt}
+                    </p>
+                    <Link href={`/news/${item.slug}`}>
+                      <div className="inline-flex items-center gap-2 text-[#ffb87a] font-medium
+                  hover:text-[#ff9a56] transition-all duration-200">
+                        <span className="text-sm">อ่านเพิ่มเติม</span>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <div className="text-center">
+            <GradientButton href="/news">ดูข่าวสารทั้งหมด</GradientButton>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gradient-to-br from-gray-50 to-white py-10">
         <div className="max-w-[1140px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content - Text */}
           <div data-aos="fade-right" className="space-y-8">
             <div>
               <div className="inline-flex items-center space-x-3 mb-4">
@@ -388,7 +493,6 @@ export default function Page() {
               </p>
             </div>
 
-            {/* Features List */}
             <div className="space-y-6">
               {features.map((feature, index) => (
                 <div
@@ -412,7 +516,6 @@ export default function Page() {
               ))}
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-6" data-aos="fade-up">
               <div className="text-center">
                 <div className="text-2xl font-bold text-[#216452]">50+</div>
@@ -429,16 +532,13 @@ export default function Page() {
             </div>
           </div>
 
-          {/* Right Content - Image */}
           <div data-aos="fade-left" className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border-gray-100">
-              {/* ใช้รูปภาพของคุณ */}
               <img
                 src="/img/default2.png"
                 alt="ทีมงานมืออาชีพ"
                 className="w-[600px] h-[500px] object-contain"
                 onError={(e) => {
-                  // Fallback ถ้ารูปภาพไม่พบ
                   e.target.src =
                     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDYwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjZjNmNGY2Ii8+Cjx0ZXh0IHg9IjMwMCIgeT0iMjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMjE2NDUyIiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0iQXJpYWwiPlRlYW0gSWxsdXN0cmF0aW9uPC90ZXh0Pgo8L3N2Zz4=";
                 }}
@@ -451,16 +551,12 @@ export default function Page() {
       <CallToAction />
       <section className="bg-white py-16 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          {/* Minimal Header */}
           <div className="text-center mb-12">
             <span className="text-sm font-semibold text-gray-400 tracking-[0.25em] uppercase">
               Clients
             </span>
           </div>
-
-          {/* Carousel Container */}
           <div className="relative">
-            {/* Gradient masks */}
             <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
             <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
@@ -514,7 +610,6 @@ export default function Page() {
             </Swiper>
           </div>
 
-          {/* Optional Navigation Dots */}
           <div className="flex justify-center mt-8">
             <div className="flex space-x-2">
               {[...Array(Math.ceil(clients.length / 6))].map((_, idx) => (

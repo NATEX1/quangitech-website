@@ -42,7 +42,7 @@ export default function ServiceDetail() {
 
   return (
     <>
-      <div className="relative w-full h-[80px] bg-gradient-to-t from-[#0d3a2d] to-[#1a5c48]"></div>
+      <div className="relative w-full h-[80px] bg-gradient-to-b from-[#1a5c48]/95 via-[#216452]/90 to-[#1a5c48]/95"></div>
 
       <div className="max-w-[1200px] mx-auto px-2 pt-12 md:pt-12 md:pb-4 relative border-b border-gray-300">
         <h1 className="text-3xl font-bold text-gray-800 tracking-[0.1em] uppercase mb-4">
@@ -104,11 +104,10 @@ export default function ServiceDetail() {
               {service.gallery.map((img, idx) => (
                 <div
                   key={idx}
-                  className={`flex-shrink-0 w-30 h-20 md:w-30 md:h-20 rounded-lg overflow-hidden cursor-pointer shadow-md transition-transform hover:scale-105 border-2 ${
-                    mainImage === img
+                  className={`flex-shrink-0 w-30 h-20 md:w-30 md:h-20 rounded-lg overflow-hidden cursor-pointer shadow-md transition-transform hover:scale-105 border-2 ${mainImage === img
                       ? "border-white-400"
                       : "border-transparent"
-                  }`}
+                    }`}
                   onClick={() => {
                     if (!isDragging) setMainImage(img);
                   }}
