@@ -17,7 +17,7 @@ export default function Company() {
     return (
         <div>
             {/* Hero Section */}
-            <div className="relative w-full h-[80px] bg-gradient-to-t from-[#0d3a2d] to-[#1a5c48]"></div>
+            <div className="relative w-full h-[80px] bg-gradient-to-b from-[#1a5c48]/95 via-[#216452]/90 to-[#1a5c48]/95"></div>
 
             <div className="max-w-[1200px] mx-auto px-2 pt-12 md:pt-12 md:pb-4 relative border-b border-gray-300">
                 <h1 className="text-3xl font-bold text-gray-800 tracking-[0.1em] uppercase mb-4">Company Information</h1>
@@ -28,15 +28,12 @@ export default function Company() {
                 </nav>
             </div>
 
-            {/* Main Content - Clean Layout */}
             <section className="relative py-20 bg-gray-50/50">
                 <div className="max-w-5xl mx-auto px-6 space-y-16">
 
-                    {/* Our Beginning */}
                     <article className="group" data-aos="fade-up">
                         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100/50 hover:shadow-lg transition-all duration-700">
 
-                            {/* Header */}
                             <header className="mb-10">
                                 <div className="inline-flex items-center space-x-3 mb-4">
                                     <div className="w-1 h-8 bg-gradient-to-b from-orange-400 to-orange-500 rounded-full"></div>
@@ -50,7 +47,6 @@ export default function Company() {
                                 </h2>
                             </header>
 
-                            {/* Content */}
                             <div className="prose prose-lg max-w-none">
                                 <p className="text-gray-600 leading-[1.8] font-light text-base md:text-lg mb-8">
                                     บริษัท ควอนจิเทค จำกัด ได้ก่อตั้งในปีพ.ศ. 2560 จากการมองเห็นเทคโนโลยีทางด้าน
@@ -65,14 +61,12 @@ export default function Company() {
                                 </p>
                             </div>
 
-                            {/* Quote */}
                             <blockquote className="mt-12 p-8 bg-gradient-to-r from-gray-50 to-orange-50/50 rounded-2xl border-l-4 border-orange-400" data-aos="fade-in" data-aos-delay="200">
                                 <p className="text-lg md:text-xl font-light text-gray-700 italic text-center leading-relaxed">
                                     "เพราะไม่ต้องการเหมือนใคร... เราจึงแตกต่าง"
                                 </p>
                             </blockquote>
 
-                            {/* Image */}
                             <figure className="mt-12">
                                 <div className="relative overflow-hidden rounded-2xl bg-gray-100">
                                     <img
@@ -85,11 +79,9 @@ export default function Company() {
                         </div>
                     </article>
 
-                    {/* Our Goals */}
                     <article className="group" data-aos="fade-up">
                         <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100/50 hover:shadow-lg transition-all duration-700">
 
-                            {/* Header */}
                             <header className="mb-10">
                                 <div className="inline-flex items-center space-x-3 mb-4">
                                     <div className="w-1 h-8 bg-[#1a5c48] rounded-full"></div>
@@ -103,7 +95,6 @@ export default function Company() {
                                 </h2>
                             </header>
 
-                            {/* Content */}
                             <div className="prose prose-lg max-w-none mb-10">
                                 <p className="text-gray-600 leading-[1.8] font-light text-base md:text-lg">
                                     บริษัท ควอนจิเทค จำกัด พร้อมที่จะก้าวขึ้นสู่ความเป็นผู้นำทางธุรกิจอย่างเต็มรูปแบบด้วยนโยบาย
@@ -113,7 +104,6 @@ export default function Company() {
                                 </p>
                             </div>
 
-                            {/* Highlight Box */}
                             <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100/50">
                                 <div className="flex items-start space-x-4">
                                     <div className="flex-shrink-0 w-10 h-10 bg-blue-500/10 rounded-full flex items-center justify-center mt-1">
@@ -129,7 +119,6 @@ export default function Company() {
                                 </div>
                             </div>
 
-                            {/* Image */}
                             <figure className="mt-12">
                                 <div className="relative overflow-hidden rounded-2xl bg-gray-100">
                                     <img
@@ -143,8 +132,6 @@ export default function Company() {
                     </article>
                 </div>
             </section>
-
-
             <Footer />
         </div>
     );

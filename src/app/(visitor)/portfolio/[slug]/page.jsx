@@ -8,10 +8,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 export default function PortfolioDetail() {
-  // ตัวอย่างสไลด์ผลงานที่เกี่ยวข้อง
   const relatedWorks = [
     {
-      id: "1",
+      slug: "1",
       title: "System Development",
       description:
         "บริการพัฒนาซอฟต์แวร์และระบบครบวงจร ครอบคลุมตั้งแต่การวิเคราะห์ความต้องการ ออกแบบ พัฒนา จนถึงการดูแลรักษา",
@@ -56,8 +55,7 @@ export default function PortfolioDetail() {
 
   return (
     <>
-      {/* Hero Section */}
-      <div className="relative w-full h-[80px] bg-gradient-to-t from-[#0d3a2d] to-[#1a5c48]"></div>
+      <div className="relative w-full h-[80px] bg-gradient-to-b from-[#1a5c48]/95 via-[#216452]/90 to-[#1a5c48]/95"></div>
 
       <div className="max-w-[1200px] mx-auto px-2 pt-12 md:pt-12 md:pb-4 relative border-b border-gray-300">
         <h1 className="text-3xl font-bold text-gray-800 tracking-[0.1em] uppercase mb-4">
@@ -76,11 +74,8 @@ export default function PortfolioDetail() {
         </nav>
       </div>
 
-      {/* Portfolio Detail Section */}
       <div className="max-w-[1200px] mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row gap-12">
-        {/* Left Column: Main Image + Gallery */}
         <div className="md:w-1/2 flex flex-col gap-6">
-          {/* Main Image Container */}
           <div className="w-full aspect-[4/3] rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 flex items-center justify-center bg-white">
             <img
               src={mainImage}
@@ -144,7 +139,6 @@ export default function PortfolioDetail() {
           </div>
         </div>
 
-        {/* Right Column: Text */}
         <div className="bg-gray-100 rounded-xl border-2 border-gray-200 p-6 md:w-1/2 flex flex-col justify-start">
           <span className="text-sm text-gray-500 mb-2">
             {Title.date} | {Title.category}
@@ -163,7 +157,6 @@ export default function PortfolioDetail() {
       </div>
 
       <RecentWorks />
-      {/* Footer */}
       <Footer />
     </>
   );

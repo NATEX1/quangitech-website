@@ -19,7 +19,7 @@ export async function POST(req) {
     const token = req.cookies.get("token")?.value;
     console.log("Token from cookie:", token); // <== log token
 
-    if (!token) {
+    /* if (!token) {
       console.log("No token found");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -33,7 +33,7 @@ export async function POST(req) {
     }
 
     const { name, description, slug } = await req.json();
-    console.log("Creating category with data:", { name, description, slug }); // <== log input
+    console.log("Creating category with data:", { name, description, slug }); // <== log input */
 
     const newCategory = await prisma.category.create({
       data: { name, slug, description },

@@ -23,7 +23,7 @@ export default function Portfolio() {
   // ตัวอย่างผลงาน static
   const works = [
     {
-      id: 1,
+      slug: 1,
       title: "ระบบบริหารงานบุคคล",
       category: "System Development",
       description: "ระบบจัดการข้อมูลพนักงาน และรายงานประสิทธิภาพ",
@@ -31,7 +31,7 @@ export default function Portfolio() {
       date: "5 ม.ค. 2023",
     },
     {
-      id: 2,
+      slug: 2,
       title: "เว็บไซต์ร้านค้าออนไลน์",
       category: "System Development",
       description: "ออกแบบเว็บไซต์ e-commerce สำหรับธุรกิจขนาดเล็ก",
@@ -39,7 +39,7 @@ export default function Portfolio() {
       date: "20 ก.พ. 2023",
     },
     {
-      id: 3,
+      slug: 3,
       title: "ชุดอุปกรณ์สำนักงาน",
       category: "Office Supplies",
       description: "จัดเตรียมและจัดส่งอุปกรณ์สำนักงานครบชุด",
@@ -47,7 +47,7 @@ export default function Portfolio() {
       date: "10 มี.ค. 2023",
     },
     {
-      id: 4,
+      slug: 4,
       title: "รายงานวิเคราะห์ข้อมูล",
       category: "Data Analysis & Cleaning",
       description: "ทำความสะอาดและวิเคราะห์ข้อมูลเพื่อใช้ในการตัดสินใจ",
@@ -55,7 +55,7 @@ export default function Portfolio() {
       date: "25 เม.ย. 2023",
     },
     {
-      id: 5,
+      slug: 5,
       title: "สื่อสิ่งพิมพ์โฆษณา",
       category: "Printing Services",
       description: "ออกแบบและพิมพ์โบรชัวร์ แผ่นพับ และป้ายประชาสัมพันธ์",
@@ -63,7 +63,7 @@ export default function Portfolio() {
       date: "15 พ.ค. 2023",
     },
     {
-      id: 6,
+      slug: 6,
       title: "อบรมคอมพิวเตอร์",
       category: "Computer Training",
       description: "จัดอบรมคอมพิวเตอร์พื้นฐานและโปรแกรมสำนักงาน",
@@ -71,7 +71,7 @@ export default function Portfolio() {
       date: "30 มิ.ย. 2023",
     },
     {
-      id: 7,
+      slug: 7,
       title: "โปรแกรมบัญชีสำเร็จรูป",
       category: "Package Programs",
       description: "พัฒนาโปรแกรมบัญชีสำหรับธุรกิจขนาดกลาง",
@@ -79,7 +79,7 @@ export default function Portfolio() {
       date: "12 ก.ค. 2023",
     },
     {
-      id: 8,
+      slug: 8,
       title: "ระบบจัดการคลังสินค้า",
       category: "System Development",
       description: "ระบบติดตามสินค้าและจัดการสต็อกอัตโนมัติ",
@@ -87,7 +87,7 @@ export default function Portfolio() {
       date: "8 ส.ค. 2023",
     },
     {
-      id: 9,
+      slug: 9,
       title: "ออกแบบโปสเตอร์โฆษณา",
       category: "Printing Services",
       description: "ออกแบบโปสเตอร์ขนาดใหญ่สำหรับแคมเปญโฆษณา",
@@ -95,7 +95,7 @@ export default function Portfolio() {
       date: "18 ก.ย. 2023",
     },
     {
-      id: 10,
+      slug: 10,
       title: "ฝึกอบรม Excel ขั้นสูง",
       category: "Computer Training",
       description: "อบรมการใช้ Excel เพื่อวิเคราะห์และสรุปข้อมูล",
@@ -103,7 +103,7 @@ export default function Portfolio() {
       date: "5 ต.ค. 2023",
     },
     {
-      id: 11,
+      slug: 11,
       title: "เครื่องเขียนและอุปกรณ์สำนักงาน",
       category: "Office Supplies",
       description: "จัดส่งเครื่องเขียนและอุปกรณ์สำนักงานรายเดือน",
@@ -111,7 +111,7 @@ export default function Portfolio() {
       date: "22 ต.ค. 2023",
     },
     {
-      id: 12,
+      slug: 12,
       title: "โปรแกรมจัดการลูกค้า",
       category: "Package Programs",
       description: "ระบบ CRM สำหรับติดตามลูกค้าและยอดขาย",
@@ -119,7 +119,7 @@ export default function Portfolio() {
       date: "3 พ.ย. 2023",
     },
     {
-      id: 13,
+      slug: 13,
       title: "โปรแกรมจัดการลูกค้า",
       category: "Package Programs",
       description: "ระบบ CRM สำหรับติดตามลูกค้าและยอดขาย",
@@ -144,7 +144,7 @@ export default function Portfolio() {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative w-full h-[80px] bg-gradient-to-t from-[#0d3a2d] to-[#1a5c48]"></div>
+      <div className="relative w-full h-[80px] bg-gradient-to-b from-[#1a5c48]/95 via-[#216452]/90 to-[#1a5c48]/95"></div>
 
       <div className="max-w-[1200px] mx-auto px-2 pt-12 md:pt-12 md:pb-4 relative border-b border-gray-300">
         <h1 className="text-3xl font-bold text-gray-800 tracking-[0.1em] uppercase mb-4">
@@ -166,11 +166,10 @@ export default function Portfolio() {
           <h3 className="text-xl font-bold mb-4">หมวดหมู่ผลงาน</h3>
           <ul className="space-y-2">
             <li
-              className={`px-4 py-2 rounded-lg transition cursor-pointer ${
-                selectedCategory === "All"
-                  ? "bg-white text-[#1a5c48] shadow-md"
-                  : "text-gray-700 hover:bg-gray-50 hover:shadow-md"
-              }`}
+              className={`px-4 py-2 rounded-lg transition cursor-pointer ${selectedCategory === "All"
+                ? "bg-white text-[#1a5c48] shadow-md"
+                : "text-gray-700 hover:bg-gray-50 hover:shadow-md"
+                }`}
               onClick={() => {
                 setSelectedCategory("All");
                 setCurrentPage(1);
@@ -181,11 +180,10 @@ export default function Portfolio() {
             {categories.map((cat) => (
               <li
                 key={cat}
-                className={`px-4 py-2 rounded-lg transition cursor-pointer ${
-                  selectedCategory === cat
-                    ? "bg-white text-[#1a5c48] shadow-md"
-                    : "text-gray-700 hover:bg-gray-50 hover:shadow-md"
-                }`}
+                className={`px-4 py-2 rounded-lg transition cursor-pointer ${selectedCategory === cat
+                  ? "bg-white text-[#1a5c48] shadow-md"
+                  : "text-gray-700 hover:bg-gray-50 hover:shadow-md"
+                  }`}
                 onClick={() => {
                   setSelectedCategory(cat);
                   setCurrentPage(1);
@@ -208,20 +206,18 @@ export default function Portfolio() {
             </span>
             <ChevronDown
               size={18}
-              className={`transform transition-transform ${
-                isAccordionOpen ? "rotate-180" : ""
-              }`}
+              className={`transform transition-transform ${isAccordionOpen ? "rotate-180" : ""
+                }`}
             />
           </button>
 
           {isAccordionOpen && (
             <ul className="mt-2 bg-white border border-gray-200 rounded-lg shadow divide-y">
               <li
-                className={`px-4 py-2 cursor-pointer ${
-                  selectedCategory === "All"
-                    ? "text-[#1a5c48]"
-                    : "text-gray-700"
-                }`}
+                className={`px-4 py-2 cursor-pointer ${selectedCategory === "All"
+                  ? "text-[#1a5c48]"
+                  : "text-gray-700"
+                  }`}
                 onClick={() => {
                   setSelectedCategory("All");
                   setCurrentPage(1);
@@ -233,11 +229,10 @@ export default function Portfolio() {
               {categories.map((cat) => (
                 <li
                   key={cat}
-                  className={`px-4 py-2 cursor-pointer ${
-                    selectedCategory === cat
-                      ? "text-[#1a5c48]"
-                      : "text-gray-700"
-                  }`}
+                  className={`px-4 py-2 cursor-pointer ${selectedCategory === cat
+                    ? "text-[#1a5c48]"
+                    : "text-gray-700"
+                    }`}
                   onClick={() => {
                     setSelectedCategory(cat);
                     setCurrentPage(1);
@@ -256,7 +251,7 @@ export default function Portfolio() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {currentWorks.map((work) => (
               <div
-                key={work.id}
+                key={work.slug}
                 className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
               >
                 <div className="relative group">
@@ -281,7 +276,7 @@ export default function Portfolio() {
                     <span className="text-xs text-gray-500">{work.date}</span>
 
                     <Link
-                      href={`/portfolio/${work.id}`}
+                      href={`/portfolio/${work.slug}`}
                       className="inline-flex items-center gap-1 text-sm text-gray-800 font-semibold hover:underline"
                     >
                       ดูรายละเอียด <ExternalLink size={14} />
