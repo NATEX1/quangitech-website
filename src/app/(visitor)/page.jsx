@@ -46,11 +46,11 @@ export default function Page() {
     const fetchServices = async () => {
       try {
         const res = await fetch("/api/posts");
-        
+
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
         console.log(data);
-        
+
         setServices(data);
       } catch (err) {
         console.error(err);
@@ -322,7 +322,7 @@ export default function Page() {
                   {service.excerpt}
                 </p>
 
-                <Link href={`/servicedetail/${service.slug}`}>
+                <Link href={`/services/${service.slug}`}>
                   <Button
                     className="relative bg-gradient-to-r from-[#ffb87a] to-[#ff9a56] hover:from-[#ff9a56] hover:to-[#e6935a] 
                    text-white font-medium rounded-2xl px-8 py-3 

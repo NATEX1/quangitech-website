@@ -38,6 +38,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import Loading from "@/components/loading";
+import { Dialog } from "@/components/ui/dialog";
+import AddSubmenuSheet from "@/components/add-submenu-sheet";
 
 function SortableItem({ id, children, isDragging }) {
   const {
@@ -66,7 +68,6 @@ function SortableItem({ id, children, isDragging }) {
   );
 }
 
-// ✅ Enhanced MenuItemCard with submenu support
 function MenuItemCard({
   item,
   isDragging,
@@ -204,7 +205,6 @@ function MenuItemCard({
   );
 }
 
-// ✅ Enhanced RenderMenuItem with better submenu styling
 function RenderMenuItem({
   item,
   draggingItemId,
@@ -256,7 +256,7 @@ function RenderMenuItem({
   );
 }
 
-function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
+/* function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
   const [formData, setFormData] = useState({
     name: "",
     url: "",
@@ -294,7 +294,7 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <Dialog className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
         <h2 className="text-lg font-semibold mb-4">
           Add Submenu Item to "{parentItem?.name}"
@@ -337,9 +337,9 @@ function AddSubmenuSheet({ parentItem, menu, onAdd, open, onOpenChange }) {
           </div>
         </form>
       </div>
-    </div>
+    </Dialog>
   );
-}
+} */
 
 export default function Menus() {
   const [menus, setMenus] = useState([]);

@@ -36,6 +36,8 @@ import {
   Sun,
   ChevronUp,
   Menu,
+  Settings,
+  Settings2,
 } from "lucide-react";
 
 import {
@@ -195,6 +197,18 @@ export default function AppSidebar() {
                   <Link href="/backoffice/menus">
                     <Menu />
                     <span>Menus</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive("/backoffice/settings")}
+                >
+                  <Link href="/backoffice/settings">
+                    <Settings2 />
+                    <span>Settings</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
