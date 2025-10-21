@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import { ImageLibraryDialog } from "@/components/image-library-dialog";
 
 export default function EditPost() {
-  const { slug: routeSlug  } = useParams(); 
+  const { slug: routeSlug } = useParams();
   const router = useRouter();
 
   const [title, setTitle] = useState("");
@@ -102,6 +102,17 @@ export default function EditPost() {
     }
   };
 
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .normalize("NFC")
+      .replace(/\s+/g, "-")
+      .replace(/[^\p{L}\p{N}\p{M}-]+/gu, "")
+      .replace(/--+/g, "-");
+  };
+
+
   return (
     <div className="flex flex-col p-6">
       <div className="flex items-center mb-6">
@@ -152,14 +163,23 @@ export default function EditPost() {
             <Label htmlFor="slug" className="text-sm font-medium">
               Slug
             </Label>
-            <Input
-              id="slug"
-              type="text"
-              className="mt-1"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              disabled={isLoading}
-            />
+            <div className="flex items-center gap-2 mt-2">
+              <Input
+                id="slug"
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                disabled={isLoading}
+              />
+              <Button
+                onClick={() => {
+                  setSlug(generateSlug(title));
+                }}
+                disabled={isLoading}
+              >
+                Generate Slug
+              </Button>
+            </div>
           </div>
 
           {/* Excerpt */}
@@ -179,9 +199,7 @@ export default function EditPost() {
 
           {/* Content */}
           <div className="mb-4">
-            <Label className="text-sm font-medium mb-2 block">
-              Content
-            </Label>
+            <Label className="text-sm font-medium mb-2 block">Content</Label>
             <FroalaEditor content={content} onChange={setContent} />
           </div>
         </div>

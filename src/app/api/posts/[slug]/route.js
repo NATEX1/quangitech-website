@@ -1,11 +1,12 @@
-import { PrismaClient } from "@/generated/prisma";
 import path from "path";
 import { mkdir, writeFile } from "fs/promises";
 import { verifyToken } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function GET(req, { params }) {
   const { slug } = await params;
@@ -14,8 +15,8 @@ export async function GET(req, { params }) {
     const post = await prisma.post.findUnique({
       where: { slug },
       include: {
-        category: true
-      }
+        category: true,
+      },
     });
 
     if (!post) {
@@ -34,15 +35,14 @@ export async function GET(req, { params }) {
 
 export async function DELETE(req, { params }) {
   const { slug } = await params;
-  const token = req.cookies.get("token")?.value;
+  const session = await getServerSession(authOptions);
 
-  if (!token) {
+  if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const payload = await verifyToken(token);
-  if (!payload?.userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
@@ -68,15 +68,14 @@ export async function DELETE(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { slug: postSlug } = await params;
-  const token = req.cookies.get("token")?.value;
+  const session = await getServerSession(authOptions);
 
-  if (!token) {
+  if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const payload = await verifyToken(token);
-  if (!payload?.userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const formData = await req.formData();

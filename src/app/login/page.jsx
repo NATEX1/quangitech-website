@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { FcGoogle } from "react-icons/fc";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -41,7 +43,7 @@ export default function LoginForm() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleCredentialsSignIn = async (e) => {
     e.preventDefault();
 
     const emailError = validateEmail(formData.email);
@@ -53,34 +55,30 @@ export default function LoginForm() {
     setIsLoading(true);
     setError("");
 
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+    const res = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Invalid credentials");
-      } else {
-        router.push("/backoffice");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
+    if (res?.error) {
+      setError(res.error);
+    } else {
+      router.push("/backoffice");
     }
 
     setIsLoading(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError("");
+    await signIn("google", { callbackUrl: "/backoffice" });
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md rounded-none shadow-none border-0">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">
             Welcome back
@@ -90,13 +88,14 @@ export default function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
+          {/* Credentials Form */}
+          <form onSubmit={handleCredentialsSignIn} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -124,10 +123,28 @@ export default function LoginForm() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "loading..." : "Sign in"}
             </Button>
-
           </form>
+
+          {/* Divider */}
+          <div className="flex items-center my-2 text-xs">
+            <hr className="flex-1 border-t border-gray-300" />
+            <span className="px-2 text-gray-500">or</span>
+            <hr className="flex-1 border-t border-gray-300" />
+          </div>
+
+          {/* Google Sign In */}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-2"
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
+          >
+            <FcGoogle size={20} />
+            {isLoading ? "Redirecting..." : "Sign in with Google"}
+          </Button>
         </CardContent>
       </Card>
     </div>

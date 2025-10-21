@@ -369,7 +369,6 @@ export default function page() {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  if (loading) return <Loading />;
 
   return (
     <div className="p-6">

@@ -1,32 +1,33 @@
-import { PrismaClient } from "@/generated/prisma";
-import { verifyToken } from "@/lib/jwt";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth"; 
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function PUT(req, { params }) {
   try {
-    const token = req.cookies.get("token")?.value;
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = await verifyToken(token);
-    if (!payload?.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // เช็ค role
+    if (session.user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    const { id } = await params;
+
+    const { id: itemId } = params;
     const { sortOrder } = await req.json();
 
     const updatedItem = await prisma.menuItem.update({
-      where: { id: id },
+      where: { id: itemId },
       data: { sortOrder },
     });
 
     return NextResponse.json(updatedItem);
   } catch (error) {
-    console.error(error);
+    console.error("Failed to update menu item:", error);
     return NextResponse.json(
       { error: "Failed to update menu item" },
       { status: 500 }
@@ -36,21 +37,20 @@ export async function PUT(req, { params }) {
 
 export async function DELETE(req, { params }) {
   try {
-    const { id } = await params;
+    const session = await getServerSession(authOptions);
 
-    const token = req.cookies.get("token")?.value;
-
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = await verifyToken(token);
-    if (!payload?.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (session.user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const { id: itemId } = params;
 
     const deletedItem = await prisma.menuItem.delete({
-      where: { id: id },
+      where: { id: itemId },
     });
 
     return NextResponse.json(deletedItem, { status: 200 });

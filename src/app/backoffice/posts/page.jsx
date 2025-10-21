@@ -326,7 +326,10 @@ export default function PostsTable() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDelete(post.slug)}>
+                    <AlertDialogAction
+                      variant="destructive"
+                      onClick={() => handleDelete(post.slug)}
+                    >
                       Yes, delete
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -353,8 +356,6 @@ export default function PostsTable() {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
-  if (loading) return <Loading />;
 
   return (
     <div className="p-6">
@@ -404,7 +405,7 @@ export default function PostsTable() {
       </div>
 
       <div className="overflow-hidden rounded-md border">
-        <Table >
+        <Table>
           <TableHeader className="bg-gray-50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

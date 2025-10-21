@@ -500,7 +500,6 @@ export default function Menus() {
     );
   };
 
-  if (loading) return <Loading />;
 
   return (
     <div className="p-6">
@@ -523,8 +522,8 @@ export default function Menus() {
           <div
             className={`py-3 px-2 flex items-center border-l-4 border-y cursor-pointer transition-all duration-200 ${
               openMenuId === menu.id
-                ? "border-l-black bg-muted/20"
-                : "border-l-white hover:border-l-black hover:bg-muted/30"
+                ? "border-l-primary bg-muted/20"
+                : "border-l-white hover:border-l-primary hover:bg-muted/30"
             }`}
             onClick={() => handleToggleMenu(menu.id)}
           >

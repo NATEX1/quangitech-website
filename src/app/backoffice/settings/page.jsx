@@ -102,8 +102,16 @@ export default function SiteSettingsPage() {
                   <p>Thailand</p>
                 </div>
                 <div>
-                  <small className="text-slate-600">City/State</small>
+                  <small className="text-slate-600">Province</small>
+                  <p>Nakhon Ratchasima</p>
+                </div>
+                <div>
+                  <small className="text-slate-600">District</small>
                   <p>Pakchong</p>
+                </div>
+                <div>
+                  <small className="text-slate-600">Sub District</small>
+                  <p>Khongmuang</p>
                 </div>
                 <div>
                   <small className="text-slate-600">Postal Code</small>
@@ -115,9 +123,7 @@ export default function SiteSettingsPage() {
         </TabsContent>
 
         {/* SEO Settings */}
-        <TabsContent value="site" className="pt-6">
-          
-        </TabsContent>
+        <TabsContent value="site" className="pt-6"></TabsContent>
 
         {/* Appearance Settings */}
         <TabsContent value="appearance" className="pt-6">

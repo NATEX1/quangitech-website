@@ -1,45 +1,39 @@
-import { PrismaClient } from "@/generated/prisma";
-import { verifyToken } from "@/lib/jwt";
-import { NextResponse } from "next/server";
+import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth" // ไฟล์ config next-auth ของคุณ
+import prisma from "@/lib/prisma"
 
-const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { menuId, name, url, parentId } = body;
+    const session = await getServerSession(authOptions)
 
-    const token = req.cookies.get("token")?.value;
-
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const payload = await verifyToken(token);
-    if (!payload?.userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // เช็ค role
+    if (session.user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    let sortOrder;
+    const body = await req.json()
+    const { menuId, name, url, parentId } = body
+
+    let sortOrder
 
     if (parentId) {
       const maxSort = await prisma.menuItem.aggregate({
         _max: { sortOrder: true },
-        where: {
-          menuId,
-          parentId: parentId,
-        },
-      });
-      sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
+        where: { menuId, parentId }
+      })
+      sortOrder = (maxSort._max.sortOrder ?? 0) + 1
     } else {
       const maxSort = await prisma.menuItem.aggregate({
         _max: { sortOrder: true },
-        where: {
-          menuId,
-          parentId: null,
-        },
-      });
-      sortOrder = (maxSort._max.sortOrder ?? 0) + 1;
+        where: { menuId, parentId: null }
+      })
+      sortOrder = (maxSort._max.sortOrder ?? 0) + 1
     }
 
     const newItem = await prisma.menuItem.create({
@@ -48,16 +42,16 @@ export async function POST(req) {
         name,
         url,
         sortOrder,
-        parentId: parentId || null,
-      },
-    });
+        parentId: parentId || null
+      }
+    })
 
-    return NextResponse.json(newItem, { status: 201 });
+    return NextResponse.json(newItem, { status: 201 })
   } catch (error) {
-    console.error("Error creating menu item: ", error);
+    console.error("Error creating menu item: ", error)
     return NextResponse.json(
       { error: "Failed to create menu item" },
       { status: 500 }
-    );
+    )
   }
 }

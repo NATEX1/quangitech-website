@@ -1,21 +1,20 @@
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { PrismaClient } from "@/generated/prisma";
-import { verifyToken } from "@/lib/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function POST(req) {
-  const token = req.cookies.get("token")?.value;
+  const session = await getServerSession(authOptions);
 
-  if (!token) {
+  if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const payload = await verifyToken(token);
-  if (!payload?.userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (session.user.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const formData = await req.formData();
@@ -30,7 +29,7 @@ export async function POST(req) {
   const metaTitle = formData.get("metaTitle")?.toString();
   const metaDescription = formData.get("metaDescription")?.toString();
   const metaKeyword = formData.get("metaKeyword")?.toString();
-  const categoryId = formData.get("categoryId")?.toString();
+  const categoryId = parseInt(formData.get("categoryId")?.toString());
 
   if (!title || !slug || !content || !categoryId) {
     return NextResponse.json(
@@ -68,7 +67,7 @@ export async function POST(req) {
         metaDescription,
         metaKeyword,
         category: { connect: { id: categoryId } },
-        author: { connect: { id: payload.userId } },
+        author: { connect: { id: parseInt(session.user.id) } },
         thumbnail: thumbnailPath,
         publishedAt: status === "published" ? new Date() : null,
       },
@@ -101,17 +100,12 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
 
-    const response = NextResponse.json(posts, { status: 200 });
-
-    return response;
+    return NextResponse.json(posts, { status: 200 });
   } catch (error) {
     console.error(error);
-
-    const response = NextResponse.json(
+    return NextResponse.json(
       { error: "Failed to fetch posts" },
       { status: 500 }
     );
-
-    return response;
   }
 }

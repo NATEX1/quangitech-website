@@ -1,12 +1,26 @@
-import { PrismaClient } from "@/generated/prisma";
-import { verifyToken } from "@/lib/jwt";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!currentUser || currentUser.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const allUsers = await prisma.user.findMany({
       select: {
         id: true,
@@ -16,6 +30,7 @@ export async function GET(req) {
         avatarUrl: true,
         isActive: true,
         createdAt: true,
+        role: true,
       },
     });
 
@@ -31,32 +46,30 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { fullName, username, email, password } = await req.json();
+    const session = await getServerSession(authOptions);
 
-    const token = req.cookies.get("token")?.value;
-
-    if (!token) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = await verifyToken(token);
-    console.log("payload: ", payload);
+    const currentUser = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
 
-    if (!payload) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!currentUser || currentUser.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    const { fullName, username, email, password, role } = await req.json();
 
     if (!fullName || !username || !email || !password) {
       return NextResponse.json(
-        { error: "Username, email, and password are required" },
+        { error: "Full name, username, email, and password are required" },
         { status: 400 }
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
@@ -72,6 +85,7 @@ export async function POST(req) {
         username,
         email,
         password: hashedPassword,
+        role: role || "user",
       },
     });
 

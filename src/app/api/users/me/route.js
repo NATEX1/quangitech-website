@@ -1,34 +1,26 @@
-import { PrismaClient } from "@/generated/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { verifyToken } from "@/lib/jwt";
-import { cookies } from "next/headers";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const payload = await verifyToken(token);
-    console.log('payload: ', payload);
-    
-    if (!payload) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
-      where: { id: payload.userId },
+      where: { email: session.user.email },
       select: {
         id: true,
         username: true,
         email: true,
         fullName: true,
         avatarUrl: true,
+        role: true,
       },
     });
 

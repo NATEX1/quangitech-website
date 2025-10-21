@@ -1,7 +1,6 @@
-import { PrismaClient } from "@/generated/prisma";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
@@ -11,7 +10,6 @@ export async function GET(req) {
     const menus = await prisma.menu.findMany({
       where: nameFilter ? { name: nameFilter } : undefined,
       include: { items: true },
-      orderBy: { name: "asc" },
     });
 
     const result = menus.map(menu => {

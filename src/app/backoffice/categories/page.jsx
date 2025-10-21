@@ -20,20 +20,30 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { ArrowUpDown, Edit, Trash } from "lucide-react";
 import { toast } from "sonner";
-import Loading from "@/components/loading";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function categories() {
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  categories;
   const [description, setDescription] = useState("");
   const [sorting, setSorting] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -51,6 +61,20 @@ export default function categories() {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (selectedCategory) {
+      setName(selectedCategory.name || "");
+      setSlug(selectedCategory.slug || "");
+      setDescription(selectedCategory.description || "");
+      setIsEditMode(true);
+    } else {
+      setName("");
+      setSlug("");
+      setDescription("");
+      setIsEditMode(false);
+    }
+  }, [selectedCategory]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -61,32 +85,49 @@ export default function categories() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/categories", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const isEdit = selectedCategory && selectedCategory.id;
+      const url = isEdit
+        ? `/api/categories/${selectedCategory.id}`
+        : "/api/categories";
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, slug, description }),
-        credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Failed to create category");
-      const newCategory = await res.json();
-      setCategories((prev) => [...prev, newCategory]);
+      if (!res.ok) throw new Error("Failed to save category");
+
+      const savedCategory = await res.json();
+
+      if (isEdit) {
+        setCategories((prev) =>
+          prev.map((cat) => (cat.id === savedCategory.id ? savedCategory : cat))
+        );
+        toast.success("Category updated successfully");
+      } else {
+        setCategories((prev) => [...prev, savedCategory]);
+        toast.success("Category created successfully");
+      }
+
+      // เคลียร์ฟอร์ม
       setName("");
       setSlug("");
       setDescription("");
-      toast.success("Category created successfully");
+      setSelectedCategory(null);
     } catch (error) {
-      console.error("Failed to create category:", error);
-      toast.error("Failed to create category");
+      console.error("Failed to save category:", error);
+      toast.error("Failed to save category");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (categoryId) => {
+
     try {
+      setLoading(true);
       const res = await fetch(`/api/categories/${categoryId}`, {
         method: "DELETE",
         credentials: "include",
@@ -98,11 +139,12 @@ export default function categories() {
       }
 
       toast.success("Category deleted successfully");
-
       setCategories((prev) => prev.filter((cat) => cat.id !== categoryId));
     } catch (error) {
       console.error("Error deleting category:", error);
       toast.error(error.message || "Error deleting category");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -177,12 +219,35 @@ export default function categories() {
         header: "Action",
         cell: ({ row }) => (
           <div className="w-fit">
-            <Button variant={"outline"} size="sm">
+            <Button
+              variant={"outline"}
+              size="sm"
+              onClick={() => setSelectedCategory(row.original)}
+            >
               <Edit /> Edit
             </Button>
-            <Button variant={"outline"} size="sm" className="ml-2">
-              <Trash /> delete
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" size="sm" className="ml-2">
+                  <Trash size={16} /> Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <p>This action cannot be undone.</p>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    onClick={() => handleDelete(row.original.id)}
+                  >
+                    Yes, delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         ),
       },
@@ -208,8 +273,6 @@ export default function categories() {
       .replace(/[^\p{L}\p{N}\p{M}-]+/gu, "")
       .replace(/--+/g, "-");
   };
-
-  if (loading) return <Loading />;
 
   return (
     <div className="p-6">
@@ -268,7 +331,7 @@ export default function categories() {
           </div>
           <div className="flex gap-2">
             <Button type="submit" onClick={handleSubmit} disabled={loading}>
-              Add Category
+              {isEditMode ? "Update Category" : "Add Category"}
             </Button>
             <Button
               variant="outline"
@@ -276,6 +339,8 @@ export default function categories() {
                 setName("");
                 setSlug("");
                 setDescription("");
+                setSelectedCategory(null);
+                setIsEditMode(false);
               }}
               disabled={loading}
             >

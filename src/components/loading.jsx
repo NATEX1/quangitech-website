@@ -1,9 +1,16 @@
 "use client";
 
-export default function Loading() {
+import { Dialog, DialogContent } from "./ui/dialog";
+
+export default function Loading({ loading }) {
   return (
-    <div className="fixed top-0 left-0 w-full h-1 bg-gray-200">
-      <div className="h-1 bg-blue-500 animate-load"></div>
-    </div>
+    <Dialog open={loading} onOpenChange={() => {}}>
+      <DialogContent className="flex items-center justify-center">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-700 rounded-full animate-spin"></div>
+          <span>Loading...</span>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

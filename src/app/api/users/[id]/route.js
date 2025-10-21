@@ -1,36 +1,26 @@
-import { PrismaClient } from "@/generated/prisma";
-import { verifyToken } from "@/lib/jwt";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth"; 
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export async function DELETE(req, { params }) {
   try {
-    const token = req.cookies.get("token")?.value;
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = await verifyToken(token);
-    console.log("payload: ", payload);
-
-    if (!payload) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (session.user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { id } = await params;
-    const user = req.headers.get("x-user")
-      ? JSON.parse(req.headers.get("x-user"))
-      : null;
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const { id: userId } = await params;
 
     await prisma.user.delete({
-      where: { id },
+      where: { id: userId },
     });
 
     return NextResponse.json({ message: "User deleted successfully" });
@@ -45,19 +35,19 @@ export async function DELETE(req, { params }) {
 
 export async function PUT(req, { params }) {
   try {
-    const { id } = await params;
-    const token = req.cookies.get("token")?.value;
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const payload = await  verifyToken(token);
-    if (!payload) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (session.user.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const { id: userId } = await params;
     const body = await req.json();
+
     const updateData = {
       fullName: body.fullName,
       username: body.username,
@@ -66,12 +56,11 @@ export async function PUT(req, { params }) {
 
     if (body.password) {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(body.password, salt);
-      updateData.password = hashedPassword;
+      updateData.password = await bcrypt.hash(body.password, salt);
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { id: userId },
       data: updateData,
     });
 

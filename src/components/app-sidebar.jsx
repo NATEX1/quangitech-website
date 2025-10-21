@@ -48,6 +48,7 @@ import {
 } from "./ui/dropdown-menu";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { signOut } from "next-auth/react";
 
 export default function AppSidebar() {
   const { open } = useSidebar();
@@ -122,11 +123,7 @@ export default function AppSidebar() {
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton
                       className="flex-1 justify-between"
-                      isActive={
-                        isParentActive("/backoffice/posts") ||
-                        isParentActive("/backoffice/categories") ||
-                        isParentActive("/backoffice/tags")
-                      }
+                      
                     >
                       <Link
                         href={"/backoffice/posts"}
